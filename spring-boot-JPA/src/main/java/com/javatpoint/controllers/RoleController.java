@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -18,17 +20,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javatpoint.dto.MyMapper;
+import com.javatpoint.dto.PrivilegeDto;
 import com.javatpoint.dto.RoleDto;
 import com.javatpoint.exceptions.RoleNotFoundException;
 import com.javatpoint.models.Privilege;
 import com.javatpoint.models.Role;
 import com.javatpoint.services.RoleService;
+@SuppressWarnings("unused")
 @RestController
 public class RoleController {
 
 	@Autowired  
     private RoleService roleService; 
 	private RoleResourceAssembler assembler; 
+	private MyMapper mapper
+    = Mappers.getMapper(MyMapper.class);
 	RoleController(RoleService roleService,
 			RoleResourceAssembler assembler) {
 
@@ -72,50 +79,21 @@ public class RoleController {
 //	    return ResponseEntity.noContent().build();
 //	  }
 	
-	@GetMapping("/roles")
+	  @GetMapping("/roles")
 	  ArrayList<RoleDto> getAllRoles() {
-		List<Role> roles=roleService.getAllRoles();
-		ArrayList<RoleDto> rolesDto=new ArrayList<>();
-		for (int i = 0; i < roles.size(); i++) {
-			RoleDto tempDto=new RoleDto();
-			tempDto.setName(roles.get(i).getName());
-			ArrayList<String> privileges=new ArrayList<>();
-			ArrayList<Privilege> rolePrivileges=new ArrayList<>(roles.get(i).getPrivileges());
-			for (int j = 0; j < rolePrivileges.size(); j++) {
-				 Privilege p=rolePrivileges.get(j);
-				 privileges.add(p.getName());
-			}
-			tempDto.setPrivileges(privileges);
-			rolesDto.add(tempDto);
-		}
-	    return rolesDto;
+	    return mapper.rolesToDtos(roleService.getAllRoles());
 	  }
-
 	  @PostMapping("/admin/roles/addrole")
 	  Role newRole(@RequestBody Role newRole) {
 	    return roleService.addRole(newRole);
 	  }
-
-	  // Single item
-
 	  @GetMapping("/roles/{id}")
 	  RoleDto getRole(@PathVariable Long id) throws RoleNotFoundException {
-		  Role role=roleService.getRole(id)
-			      .orElseThrow(() -> new RoleNotFoundException(id));
-		  RoleDto roleDto=new RoleDto();
-		  roleDto.setName(role.getName());
-		  ArrayList<String> privileges=new ArrayList<>();
-			ArrayList<Privilege> rolePrivileges=new ArrayList<>(role.getPrivileges());
-			for (int j = 0; j < rolePrivileges.size(); j++) {
-				 Privilege p=rolePrivileges.get(j);
-				 privileges.add(p.getName());
-			}
-			roleDto.setPrivileges(privileges);
-		  return roleDto;
+		  return mapper.roleToDto(roleService.getRole(id)
+			      .orElseThrow(() -> new RoleNotFoundException(id)));
 	  }
 	  @DeleteMapping("/admin/roles/{id}")
 	  void deleteRole(@PathVariable Long id) {
-		  System.out.println("in delete");
 	    roleService.deleteRole(id);
 	  }
 }

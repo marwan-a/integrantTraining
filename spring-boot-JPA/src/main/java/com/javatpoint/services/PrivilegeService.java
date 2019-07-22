@@ -26,6 +26,9 @@ public class PrivilegeService {
 	public Optional<Privilege> getPrivilege(Long id) {
 		return privilegeRepository.findById(id);
 	}
+	public Privilege getPrivilege(String name) {
+		return privilegeRepository.findByName(name);
+	}
 
 	public void deletePrivilege(Long id) {
 		privilegeRepository.deleteById(id);  

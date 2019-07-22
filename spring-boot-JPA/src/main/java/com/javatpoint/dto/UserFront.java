@@ -11,5 +11,5 @@ public class UserFront {
 	private String email;
 	private String name;
 	private boolean enabled;
-	private ArrayList<String> roles;
+	private ArrayList<RoleDto> roles;
 }

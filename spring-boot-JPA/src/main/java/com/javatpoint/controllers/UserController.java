@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javatpoint.dto.MyMapper;
 import com.javatpoint.dto.UserFront;
 import com.javatpoint.exceptions.UserNotFoundException;
 import com.javatpoint.models.Role;
@@ -40,6 +42,8 @@ public class UserController {
 	@Autowired  
     private UserService userService; 
 	private  UserResourceAssembler assembler; 
+	private MyMapper mapper
+    = Mappers.getMapper(MyMapper.class);
 	UserController(UserService userService,
 			UserResourceAssembler assembler) {
 
@@ -50,23 +54,7 @@ public class UserController {
 	//all users with resource hateaos
 	@GetMapping("/users")
 	  ArrayList<UserFront> getAllUsers() {
-		List<UserRecord> users=userService.getAllUsers();
-		ArrayList<UserFront> usersFront=new ArrayList<>();
-		for (int i = 0; i < users.size(); i++) {
-			UserFront uf=new UserFront();
-	  		uf.setEmail(users.get(i).getEmail());
-	  		uf.setEnabled(users.get(i).isEnabled());
-	  		uf.setName(users.get(i).getName());
-	  		uf.setUser_id(users.get(i).getUser_id());
-	  		ArrayList<Role> userRoles=new ArrayList<>(users.get(i).getRoles());
-	  		ArrayList<String> strRoles=new ArrayList<>();
-	  		for (int j = 0; j < userRoles.size(); j++) {
-	  			strRoles.add(userRoles.get(j).getName());
-			}
-	  		uf.setRoles(strRoles);
-	  		usersFront.add(uf);
-		}
-		return usersFront;
+		return mapper.usersToFronts(userService.getAllUsers());
 	  }
 //    @GetMapping("/users")
 //	  Resources<Resource<UserRecord>> getAllUsers() {
@@ -80,20 +68,7 @@ public class UserController {
 //	  }
     @PostMapping("/admin/users/adduser")
     UserFront newUser(@Validated(ValidationSequence.class) @RequestBody UserRecord newUser) {
-
-	    UserRecord user = userService.addUser(newUser);
-	    UserFront uf=new UserFront();
-  		uf.setEmail(user.getEmail());
-  		uf.setEnabled(user.isEnabled());
-  		uf.setName(user.getName());
-  		uf.setUser_id(user.getUser_id());
-  		ArrayList<Role> userRoles=new ArrayList<>(user.getRoles());
-  		ArrayList<String> strRoles=new ArrayList<>();
-  		for (int i = 0; i < userRoles.size(); i++) {
-  			strRoles.add(userRoles.get(i).getName());
-		}
-  		uf.setRoles(strRoles);
-	    return uf;
+	    return mapper.userToFront(userService.addUser(newUser));
 	  }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -109,21 +84,8 @@ public class UserController {
     }
     @GetMapping("/users/{id}")
 	  UserFront getUser(@PathVariable Long id) throws UserNotFoundException {
-
-  	UserRecord user = userService.getUser(id)
-	      .orElseThrow(() -> new UserNotFoundException(id));
-  		UserFront uf=new UserFront();
-  		uf.setEmail(user.getEmail());
-  		uf.setEnabled(user.isEnabled());
-  		uf.setName(user.getName());
-  		uf.setUser_id(user.getUser_id());
-  		ArrayList<Role> userRoles=new ArrayList<>(user.getRoles());
-  		ArrayList<String> strRoles=new ArrayList<>();
-  		for (int i = 0; i < userRoles.size(); i++) {
-  			strRoles.add(userRoles.get(i).getName());
-		}
-  		uf.setRoles(strRoles);
-	    return uf;
+	    return mapper.userToFront(userService.getUser(id)
+	      .orElseThrow(() -> new UserNotFoundException(id)));
 	  }
 //    @GetMapping("/users/{id}")
 //	  Resource<UserRecord> getUser(@PathVariable Long id) throws UserNotFoundException {
@@ -156,9 +118,7 @@ public class UserController {
 
 	  @DeleteMapping("/users/{id}")
 	  ResponseEntity<?> deleteUser(@PathVariable Long id) {
-
 	    userService.deleteUser(id);
-
 	    return ResponseEntity.noContent().build();
 	  }
 }  

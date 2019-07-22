@@ -1,4 +1,4 @@
-package com.javatpoint.web;
+package com.javatpoint.controllers;
 
 import java.util.Locale;
 

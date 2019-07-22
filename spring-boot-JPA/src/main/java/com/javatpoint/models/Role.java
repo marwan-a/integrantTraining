@@ -18,7 +18,8 @@ public class Role {
   
    
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+	@Column(nullable = false, unique = true)
     private Long role_id;
 	@Column(nullable = false, unique = true)
     private String name;

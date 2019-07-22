@@ -7,6 +7,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.javatpoint.dto.MyMapper;
 import com.javatpoint.dto.PrivilegeDto;
 import com.javatpoint.exceptions.PrivilegeNotFoundException;
 import com.javatpoint.models.Privilege;
@@ -29,6 +32,8 @@ public class PrivilegeController {
 	@Autowired  
     private PrivilegeService privilegeService; 
 	private  PrivilegeResourceAssembler assembler; 
+	private MyMapper mapper
+    = Mappers.getMapper(MyMapper.class);
 	PrivilegeController(PrivilegeService privilegeService,
 			PrivilegeResourceAssembler assembler) {
 
@@ -75,19 +80,11 @@ public class PrivilegeController {
 
 	  @GetMapping("/privileges")
 	  ArrayList<PrivilegeDto> getAllPrivileges() {
-		List<Privilege> privileges=privilegeService.getAllPrivileges();
-		ArrayList<PrivilegeDto> privilegesDto=new ArrayList<>();
-		for (int i = 0; i < privileges.size(); i++) {
-			PrivilegeDto tempDto=new PrivilegeDto();
-			tempDto.setName(privileges.get(i).getName());
-			privilegesDto.add(tempDto);
-		}
-	    return privilegesDto;
+	    return mapper.privilegesToDtos(privilegeService.getAllPrivileges());
 	  }
 
 	  @PostMapping("/admin/privileges/addprivilege")
 	  Privilege newPrivilege(@RequestBody Privilege newPrivilege) {
-		  System.out.println("in add privilege");
 	    return privilegeService.addPrivilege(newPrivilege);
 	  }
 
@@ -95,11 +92,8 @@ public class PrivilegeController {
 
 	  @GetMapping("/privileges/{id}")
 	  PrivilegeDto getPrivilege(@PathVariable Long id) throws PrivilegeNotFoundException {
-		  Privilege priv=privilegeService.getPrivilege(id)
-			      .orElseThrow(() -> new PrivilegeNotFoundException(id));
-		  PrivilegeDto pd=new PrivilegeDto();
-		  pd.setName(priv.getName());
-		  return pd;
+		  return mapper.privelegeToDto(privilegeService.getPrivilege(id)
+			      .orElseThrow(() -> new PrivilegeNotFoundException(id)));
 	  }
 
 //	  @PutMapping("/privileges/{id}")
@@ -119,7 +113,6 @@ public class PrivilegeController {
 
 	  @DeleteMapping("/admin/privileges/{id}")
 	  void deletePrivilege(@PathVariable Long id) {
-		  System.out.println("in delete");
 	    privilegeService.deletePrivilege(id);
 	  }
 }
