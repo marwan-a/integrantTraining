@@ -37,6 +37,7 @@ import com.javatpoint.services.UserService;
 import com.javatpoint.validations.ValidationSequence;
 
 
+@SuppressWarnings("unused")
 @RestController
 public class UserController {  
 	@Autowired  
@@ -51,21 +52,11 @@ public class UserController {
    this.assembler = assembler;
  }
 
-	//all users with resource hateaos
 	@GetMapping("/users")
 	  ArrayList<UserFront> getAllUsers() {
 		return mapper.usersToFronts(userService.getAllUsers());
 	  }
-//    @GetMapping("/users")
-//	  Resources<Resource<UserRecord>> getAllUsers() {
-//
-//	    List<Resource<UserRecord>> users = userService.getAllUsers().stream()
-//	      .map(assembler::toResource)
-//	      .collect(Collectors.toList());
-//
-//	    return new Resources<>(users,
-//	      linkTo(methodOn(UserController.class).getAllUsers()).withSelfRel());
-//	  }
+
     @PostMapping("/admin/users/adduser")
     UserFront newUser(@Validated(ValidationSequence.class) @RequestBody UserRecord newUser) {
 	    return mapper.userToFront(userService.addUser(newUser));
@@ -87,38 +78,51 @@ public class UserController {
 	    return mapper.userToFront(userService.getUser(id)
 	      .orElseThrow(() -> new UserNotFoundException(id)));
 	  }
-//    @GetMapping("/users/{id}")
-//	  Resource<UserRecord> getUser(@PathVariable Long id) throws UserNotFoundException {
-//
-//    	UserRecord user = userService.getUser(id)
-//	      .orElseThrow(() -> new UserNotFoundException(id));
-//
-//	    return assembler.toResource(user);
-//	  }
-//    @PutMapping("/users/{id}")
-//	  ResponseEntity<?> replaceUser(@RequestBody UserRecord newUser, @PathVariable Long id) throws URISyntaxException {
-//
-//    	UserRecord updatedUser = userService.getUser(id)
-//	      .map(user -> {
-//	        user.setName(newUser.getName());
-//	        user.setEmail(newUser.getEmail());
-//	        return userService.addUser(user);
-//	      })
-//	      .orElseGet(() -> {
-//	    	  newUser.setUser_id(id);
-//	        return userService.addUser(newUser);
-//	      });
-//
-//	    Resource<UserRecord> resource = assembler.toResource(updatedUser);
-//
-//	    return ResponseEntity
-//	      .created(new URI(resource.getId().expand().getHref()))
-//	      .body(resource);
-//	  }
-
 	  @DeleteMapping("/users/{id}")
 	  ResponseEntity<?> deleteUser(@PathVariable Long id) {
 	    userService.deleteUser(id);
 	    return ResponseEntity.noContent().build();
 	  }
+	  
+		//all users with resource hateaos
+
+	//  @GetMapping("/users")
+//		  Resources<Resource<UserRecord>> getAllUsers() {
+	//
+//		    List<Resource<UserRecord>> users = userService.getAllUsers().stream()
+//		      .map(assembler::toResource)
+//		      .collect(Collectors.toList());
+	//
+//		    return new Resources<>(users,
+//		      linkTo(methodOn(UserController.class).getAllUsers()).withSelfRel());
+//		  }
+//	    @GetMapping("/users/{id}")
+//		  Resource<UserRecord> getUser(@PathVariable Long id) throws UserNotFoundException {
+	//
+//	    	UserRecord user = userService.getUser(id)
+//		      .orElseThrow(() -> new UserNotFoundException(id));
+	//
+//		    return assembler.toResource(user);
+//		  }
+//	    @PutMapping("/users/{id}")
+//		  ResponseEntity<?> replaceUser(@RequestBody UserRecord newUser, @PathVariable Long id) throws URISyntaxException {
+	//
+//	    	UserRecord updatedUser = userService.getUser(id)
+//		      .map(user -> {
+//		        user.setName(newUser.getName());
+//		        user.setEmail(newUser.getEmail());
+//		        return userService.addUser(user);
+//		      })
+//		      .orElseGet(() -> {
+//		    	  newUser.setUser_id(id);
+//		        return userService.addUser(newUser);
+//		      });
+	//
+//		    Resource<UserRecord> resource = assembler.toResource(updatedUser);
+	//
+//		    return ResponseEntity
+//		      .created(new URI(resource.getId().expand().getHref()))
+//		      .body(resource);
+//		  }
+
 }  

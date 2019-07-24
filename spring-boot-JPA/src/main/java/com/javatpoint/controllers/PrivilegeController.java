@@ -27,6 +27,7 @@ import com.javatpoint.exceptions.PrivilegeNotFoundException;
 import com.javatpoint.models.Privilege;
 import com.javatpoint.services.PrivilegeService;
 
+@SuppressWarnings("unused")
 @RestController
 public class PrivilegeController {
 	@Autowired  
@@ -41,7 +42,43 @@ public class PrivilegeController {
    this.assembler = assembler;
  }
 
-	//all privileges with resource hateaos
+
+	  @GetMapping("/privileges")
+	  ArrayList<PrivilegeDto> getAllPrivileges() {
+	    return mapper.privilegesToDtos(privilegeService.getAllPrivileges());
+	  }
+
+	  @PostMapping("/admin/privileges/addprivilege")
+	  PrivilegeDto newPrivilege(@RequestBody PrivilegeDto newPrivilege) {
+	    return mapper.privelegeToDto(privilegeService.addPrivilege(mapper.dtoToPrivilege(newPrivilege)));
+	  }
+	  
+	  @GetMapping("/privileges/{id}")
+	  PrivilegeDto getPrivilege(@PathVariable Long id) throws PrivilegeNotFoundException {
+		  return mapper.privelegeToDto(privilegeService.getPrivilege(id)
+			      .orElseThrow(() -> new PrivilegeNotFoundException(id)));
+	  }
+
+//	  @PutMapping("/privileges/{id}")
+//	  Privilege replaceEmployee(@RequestBody Privilege newEmployee, @PathVariable Long id) {
+//
+//	    return repository.findById(id)
+//	      .map(employee -> {
+//	        employee.setName(newEmployee.getName());
+//	        employee.setRole(newEmployee.getRole());
+//	        return repository.save(employee);
+//	      })
+//	      .orElseGet(() -> {
+//	        newEmployee.setId(id);
+//	        return repository.save(newEmployee);
+//	      });
+//	  }
+
+	  @DeleteMapping("/admin/privileges/{id}")
+	  void deletePrivilege(@PathVariable Long id) {
+	    privilegeService.deletePrivilege(id);
+	  }
+		//all privileges with resource hateaos
 //    @GetMapping("/privileges")
 //	  Resources<Resource<Privilege>> getAllPrivileges() {
 //
@@ -78,41 +115,4 @@ public class PrivilegeController {
 //	  }
 	// Aggregate root
 
-	  @GetMapping("/privileges")
-	  ArrayList<PrivilegeDto> getAllPrivileges() {
-	    return mapper.privilegesToDtos(privilegeService.getAllPrivileges());
-	  }
-
-	  @PostMapping("/admin/privileges/addprivilege")
-	  Privilege newPrivilege(@RequestBody Privilege newPrivilege) {
-	    return privilegeService.addPrivilege(newPrivilege);
-	  }
-
-	  // Single item
-
-	  @GetMapping("/privileges/{id}")
-	  PrivilegeDto getPrivilege(@PathVariable Long id) throws PrivilegeNotFoundException {
-		  return mapper.privelegeToDto(privilegeService.getPrivilege(id)
-			      .orElseThrow(() -> new PrivilegeNotFoundException(id)));
-	  }
-
-//	  @PutMapping("/privileges/{id}")
-//	  Privilege replaceEmployee(@RequestBody Privilege newEmployee, @PathVariable Long id) {
-//
-//	    return repository.findById(id)
-//	      .map(employee -> {
-//	        employee.setName(newEmployee.getName());
-//	        employee.setRole(newEmployee.getRole());
-//	        return repository.save(employee);
-//	      })
-//	      .orElseGet(() -> {
-//	        newEmployee.setId(id);
-//	        return repository.save(newEmployee);
-//	      });
-//	  }
-
-	  @DeleteMapping("/admin/privileges/{id}")
-	  void deletePrivilege(@PathVariable Long id) {
-	    privilegeService.deletePrivilege(id);
-	  }
 }

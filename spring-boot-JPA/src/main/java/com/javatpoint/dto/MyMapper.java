@@ -17,7 +17,6 @@ public interface MyMapper {
         @Mapping(source = "user_id", target = "user_id"),
         @Mapping(source = "name", target = "name"),
         @Mapping(source = "email", target = "email"),
-        @Mapping(source = "enabled", target = "enabled"),
         @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesCollectionToArrayList")
     })
 	UserFront userToFront(UserRecord user);
@@ -29,7 +28,6 @@ public interface MyMapper {
         @Mapping(source = "user_id", target = "user_id"),
         @Mapping(source = "name", target = "name"),
         @Mapping(source = "email", target = "email"),
-        @Mapping(source = "enabled", target = "enabled"),
         @Mapping(source = "roles", target = "roles", qualifiedByName = "rolesArrayListToCollection")
     })
 	UserRecord frontToUser(UserFront user);
@@ -45,6 +43,7 @@ public interface MyMapper {
 	//Roles Mapping
 	@Mappings({
         @Mapping(source = "name", target = "name"),
+        @Mapping(source = "role_id", target = "role_id"),
         @Mapping(source = "privileges", target = "privileges", qualifiedByName = "privilegesCollectionToArrayList")
     })
 	RoleDto roleToDto(Role role);
@@ -54,6 +53,7 @@ public interface MyMapper {
     }
 	@Mappings({
         @Mapping(source = "name", target = "name"),
+        @Mapping(source = "role_id", target = "role_id"),
         @Mapping(source = "privileges", target = "privileges",qualifiedByName = "privilegesArraylistToCollection")
     })
 	Role dtoToRole(RoleDto roleDto);

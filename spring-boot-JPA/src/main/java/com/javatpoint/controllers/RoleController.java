@@ -43,49 +43,13 @@ public class RoleController {
    this.assembler = assembler;
  }
 
-	//all roles with resource hateaos
-//    @GetMapping("/roles")
-//	  Resources<Resource<Role>> getAllRoles() {
-//
-//	    List<Resource<Role>> roles = roleService.getAllRoles().stream()
-//	      .map(assembler::toResource)
-//	      .collect(Collectors.toList());
-//
-//	    return new Resources<>(roles,
-//	      linkTo(methodOn(RoleController.class).getAllRoles()).withSelfRel());
-//	  }
-//    @PostMapping("/roles/addrole")
-//	  ResponseEntity<?> newRole(@RequestBody Role newRole) throws URISyntaxException {
-//
-//	    Resource<Role> resource = assembler.toResource(roleService.addRole(newRole));
-//
-//	    return ResponseEntity
-//	      .created(new URI(resource.getId().expand().getHref()))
-//	      .body(resource);
-//	  }
-//    @GetMapping("/roles/{id}")
-//	  Resource<Role> getRole(@PathVariable Long id) throws RoleNotFoundException {
-//
-//    	Role role = roleService.getRole(id)
-//	      .orElseThrow(() -> new RoleNotFoundException(id));
-//
-//	    return assembler.toResource(role);
-//	  }
-//	  @DeleteMapping("/roles/{id}")
-//	  ResponseEntity<?> deleteRole(@PathVariable Long id) {
-//
-//		  roleService.deleteRole(id);
-//
-//	    return ResponseEntity.noContent().build();
-//	  }
-	
 	  @GetMapping("/roles")
 	  ArrayList<RoleDto> getAllRoles() {
 	    return mapper.rolesToDtos(roleService.getAllRoles());
 	  }
 	  @PostMapping("/admin/roles/addrole")
-	  Role newRole(@RequestBody Role newRole) {
-	    return roleService.addRole(newRole);
+	  RoleDto newRole(@RequestBody RoleDto newRole) {
+	    return mapper.roleToDto(roleService.addRole(mapper.dtoToRole(newRole)));
 	  }
 	  @GetMapping("/roles/{id}")
 	  RoleDto getRole(@PathVariable Long id) throws RoleNotFoundException {
@@ -96,4 +60,41 @@ public class RoleController {
 	  void deleteRole(@PathVariable Long id) {
 	    roleService.deleteRole(id);
 	  }
+
+		//all roles with resource hateaos
+//	    @GetMapping("/roles")
+//		  Resources<Resource<Role>> getAllRoles() {
+	//
+//		    List<Resource<Role>> roles = roleService.getAllRoles().stream()
+//		      .map(assembler::toResource)
+//		      .collect(Collectors.toList());
+	//
+//		    return new Resources<>(roles,
+//		      linkTo(methodOn(RoleController.class).getAllRoles()).withSelfRel());
+//		  }
+//	    @PostMapping("/roles/addrole")
+//		  ResponseEntity<?> newRole(@RequestBody Role newRole) throws URISyntaxException {
+	//
+//		    Resource<Role> resource = assembler.toResource(roleService.addRole(newRole));
+	//
+//		    return ResponseEntity
+//		      .created(new URI(resource.getId().expand().getHref()))
+//		      .body(resource);
+//		  }
+//	    @GetMapping("/roles/{id}")
+//		  Resource<Role> getRole(@PathVariable Long id) throws RoleNotFoundException {
+	//
+//	    	Role role = roleService.getRole(id)
+//		      .orElseThrow(() -> new RoleNotFoundException(id));
+	//
+//		    return assembler.toResource(role);
+//		  }
+//		  @DeleteMapping("/roles/{id}")
+//		  ResponseEntity<?> deleteRole(@PathVariable Long id) {
+	//
+//			  roleService.deleteRole(id);
+	//
+//		    return ResponseEntity.noContent().build();
+//		  }
+		
 }

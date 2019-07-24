@@ -2,21 +2,18 @@ package com.javatpoint.controllers;
 
 
 import java.util.Calendar;
-
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,12 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import com.javatpoint.HibernateUtil;
 import com.javatpoint.dto.UserDto;
 import com.javatpoint.exceptions.EmailExistsException;
 import com.javatpoint.models.UserRecord;
-import com.javatpoint.repositories.UserRepository;
-import com.javatpoint.repositories.ConfirmationTokenRepository;
+import com.javatpoint.services.ConfirmationTokenService;
 import com.javatpoint.services.EmailSenderService;
 import com.javatpoint.services.UserService;
 import com.javatpoint.validations.ValidationSequence;
@@ -42,22 +37,19 @@ public class RegistrationController {
 	@Autowired
 	private UserService userService; 
 	@Autowired
-	ApplicationEventPublisher eventPublisher;
-	@Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
-	@Autowired
-    private UserRepository userRepository;
+	private ConfirmationTokenService confirmationTokenService; 
 	@Autowired
     private EmailSenderService emailSenderService;
-	@RequestMapping(value = "/user/registration", method = RequestMethod.GET)
-	public String showRegistrationForm(WebRequest request, Model model) {
+	@GetMapping(value = "/user/registration")
+	public ModelAndView showRegistrationForm(WebRequest request, ModelAndView modelAndView) {
 	    UserDto userDto = new UserDto();
 	    userDto.setName("test");
-	    model.addAttribute("user", userDto);
-	    return "registration";
+	    modelAndView.addObject("user", userDto);
+	    modelAndView.setViewName("registration");
+	    return modelAndView;
 	}
 	
-	@RequestMapping(value = "/user/registration", method = RequestMethod.POST)
+	@PostMapping(value = "/user/registration")
 	public ModelAndView registerUserAccount(
 	  @ModelAttribute("user") @Validated(ValidationSequence.class) @Valid UserDto accountDto, 
 	  BindingResult result, 
@@ -75,11 +67,7 @@ public class RegistrationController {
 	    }
 	    else
 	    {
-		    Session session=HibernateUtil.getSessionFactory().openSession();
-	    	Transaction transaction = session.beginTransaction();
-
-            ConfirmationToken confirmationToken = new ConfirmationToken(registered);
-	        session.save(confirmationToken);
+            ConfirmationToken confirmationToken=confirmationTokenService.createConfirmationToken(registered);
 	        SimpleMailMessage mailMessage = new SimpleMailMessage();
 	        mailMessage.setTo(registered.getEmail());
 	        mailMessage.setSubject("Complete Registration!");
@@ -91,8 +79,6 @@ public class RegistrationController {
 	        ModelAndView modelAndView=new ModelAndView();
 	        modelAndView.addObject("emailId", registered.getEmail());
 	        modelAndView.setViewName("successfulRegisteration");
-	        transaction.commit();
-	        session.close();
 	        return modelAndView;
 	    }
 	}
@@ -100,10 +86,10 @@ public class RegistrationController {
     public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token")String confirmationToken)
     {	
 		try {
-			ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+			ConfirmationToken token = confirmationTokenService.getConfirmationToken(confirmationToken);
 	        if(token != null)
 	        {	
-	            UserRecord user = userRepository.findByEmail(token.getUser().getEmail());
+	            UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
 	            if (!user.isEnabled())
 	            {
 	            	Calendar cal = Calendar.getInstance();
@@ -114,7 +100,7 @@ public class RegistrationController {
 	                else
 	                {
 	                    user.setEnabled(true);
-	                	userRepository.save(user);
+	                	userService.updateUser(user);
 	                    modelAndView.setViewName("accountVerified");
 	                }
 	            }
@@ -132,9 +118,6 @@ public class RegistrationController {
 		}
 		catch(EntityNotFoundException e)
 		{
-			System.out.println("-------------------------------");
-			System.out.println("in catch block");
-			System.out.println("-------------------------------");
 			modelAndView.addObject("message","This account does not exist");
             modelAndView.setViewName("noAccount");
             return modelAndView;
@@ -152,14 +135,14 @@ public class RegistrationController {
 	}
 	
 // 			Resend Verification
-	@RequestMapping(value = "/user/resendRegistrationToken", method = RequestMethod.GET)
+	@GetMapping(value = "/user/resendRegistrationToken")
 	@ResponseBody
 	public GenericResponse resendRegistrationToken(
 	  HttpServletRequest request, @RequestParam("token") String existingToken) {
-        ConfirmationToken token = userService.getVerificationToken(existingToken);
+        ConfirmationToken token = confirmationTokenService.getConfirmationToken(existingToken);
         token.setExpiryDate();
-        confirmationTokenRepository.save(token);
-	    UserRecord user = userService.getUser(token.getConfirmationToken());
+        confirmationTokenService.updateToken(token);
+	    UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
 	    SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         mailMessage.setSubject("Resend Registration Token");

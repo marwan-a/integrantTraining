@@ -33,13 +33,9 @@ public class LoadDatabase {
 	    	Session session=HibernateUtil.getSessionFactory().openSession();
 	    	Transaction transaction = session.beginTransaction();
 	    	Privilege readPrivilege=createPrivilegeIfNotFound("READ_PRIVILEGE");
-	    	//session.save(readPrivilege);
 	    	Privilege writePrivilege=createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-	    	//session.save(writePrivilege);
 	    	Role adminRole = createRoleIfNotFound("ROLE_ADMIN", Arrays.asList(readPrivilege, writePrivilege));
-	    	//session.save(adminRole);
 	    	Role userRole = createRoleIfNotFound("ROLE_USER", Arrays.asList(readPrivilege));
-	    	//session.save(userRole);
 	        UserRecord user = new UserRecord();
 	        user.setEmail("Frodo@mordor.com");
 	        user.setName("Frodo Baggins");
@@ -56,7 +52,6 @@ public class LoadDatabase {
 	    	session.save(user2);
 	        transaction.commit();
 	        session.close();
-	        //HibernateUtil.shutdown();
 	    };
 	  }
 	@Transactional
@@ -68,7 +63,6 @@ public class LoadDatabase {
 	    if (role == null) {
 	        role = new Role(name);
 	        role.setPrivileges(privileges);
-	       // roleRepository.save(role);
 	        session.save(role);
 		    transaction.commit();
 
@@ -83,7 +77,6 @@ public class LoadDatabase {
         Privilege privilege = privilegeRepository.findByName(name);
         if (privilege == null) {
             privilege = new Privilege(name);
-           // privilegeRepository.save(privilege);
             session.save(privilege);
     	    transaction.commit();
 
@@ -92,45 +85,4 @@ public class LoadDatabase {
         return privilege;
     }
 	
-	
-	
 }
-
-
-
-//EntityManager em=emf.createEntityManager();
-//em.getTransaction( ).begin( );
-//Privilege readPrivilege=new Privilege("READ_PRIVILEGE");
-//em.persist(readPrivilege);
-//Privilege  writePrivilege = new Privilege("WRITE_PRIVILEGE");
-//em.persist(writePrivilege);
-//Role adminRole = roleRepository.findByName("ROLE_ADMIN");
-//if (adminRole == null) {
-//	adminRole = new Role("ROLE_ADMIN");
-//	adminRole.setPrivileges(Arrays.asList( readPrivilege, writePrivilege));
-//	session.save(adminRole);
-//
-//}
-
-//em.persist(adminRole);
-//Role userRole = roleRepository.findByName("ROLE_USER");
-//if (userRole == null) {
-//	userRole = new Role("ROLE_USER");
-//	userRole.setPrivileges(Arrays.asList(readPrivilege));
-//	session.save(userRole);
-//
-//}
-
-//em.persist(userRole);
-
-//	Privilege readPrivilege=createPrivilegeIfNotFound("READ_PRIVILEGE");
-//
-//	Privilege writePrivilege=createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-//	Role adminRole = createRoleIfNotFound("ROLE_ADMIN", Arrays.asList(readPrivilege, writePrivilege));
-//	Role userRole = createRoleIfNotFound("ROLE_USER", Arrays.asList(readPrivilege));
-//em.persist(user);
-
-//em.persist(user2);
-//em.getTransaction( ).commit( );
-//em.close( );
-//emf.close( );

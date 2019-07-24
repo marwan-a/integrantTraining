@@ -1,4 +1,4 @@
-package com.javatpoint.tests;
+package com.javatpoint;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,13 +30,14 @@ public class RoleMapperTest {
       simpleSource.addPrivilege(p);
       simpleSource.addPrivilege(p2);
       RoleDto destination = mapper.roleToDto(simpleSource);
-      System.out.println(simpleSource);
-      System.out.println(destination);
+//      System.out.println(simpleSource);
+//      System.out.println(destination);
       assertEquals(simpleSource.getName(), destination.getName());
   }
   @Test
   public void givenDestinationToSource_whenMaps_thenCorrect() {
 	  RoleDto destination = new RoleDto();
+	  destination.setRole_id((long)6);
       destination.setName("DestinationName");
       PrivilegeDto p=new PrivilegeDto();
       p.setPrivilege_id((long) 1);
@@ -48,8 +49,8 @@ public class RoleMapperTest {
       privileges.add(p);privileges.add(p2);
       destination.setPrivileges(privileges);
       Role source = mapper.dtoToRole(destination);
-      System.out.println(source);
-      System.out.println(destination);
+//      System.out.println(source);
+//      System.out.println(destination);
       assertEquals(destination.getName(), source.getName());
   }
 }

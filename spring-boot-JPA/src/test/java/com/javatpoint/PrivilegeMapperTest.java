@@ -1,4 +1,4 @@
-package com.javatpoint.tests;
+package com.javatpoint;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -15,18 +15,20 @@ public class PrivilegeMapperTest {
   public void givenSourceToDestination_whenMaps_thenCorrect() {
       Privilege simpleSource = new Privilege();
       simpleSource.setName("SourceName");
+      simpleSource.setPrivilege_id((long) 1);
       PrivilegeDto destination = mapper.privelegeToDto(simpleSource);
-      System.out.println(simpleSource);
-      System.out.println(destination);
+//      System.out.println(simpleSource);
+//      System.out.println(destination);
       assertEquals(simpleSource.getName(), destination.getName());
   }
   @Test
   public void givenDestinationToSource_whenMaps_thenCorrect() {
 	  PrivilegeDto destination = new PrivilegeDto();
       destination.setName("DestinationName");
+      destination.setPrivilege_id((long)2);
       Privilege source = mapper.dtoToPrivilege(destination);
-      System.out.println(source);
-      System.out.println(destination);
+//      System.out.println(source);
+//      System.out.println(destination);
       assertEquals(destination.getName(), source.getName());
   }
 }

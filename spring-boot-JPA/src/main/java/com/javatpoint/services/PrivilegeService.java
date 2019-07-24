@@ -26,7 +26,7 @@ public class PrivilegeService {
 	public Optional<Privilege> getPrivilege(Long id) {
 		return privilegeRepository.findById(id);
 	}
-	public Privilege getPrivilege(String name) {
+	public Privilege getPrivilegeByName(String name) {
 		return privilegeRepository.findByName(name);
 	}
 

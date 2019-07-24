@@ -59,5 +59,4 @@ public class ConfirmationToken {
         createdDate = new Date();
         confirmationToken = UUID.randomUUID().toString();
     }
-    public ConfirmationToken() { };
 }

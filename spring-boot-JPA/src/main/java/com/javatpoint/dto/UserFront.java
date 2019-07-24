@@ -10,6 +10,5 @@ public class UserFront {
 	private long user_id;
 	private String email;
 	private String name;
-	private boolean enabled;
 	private ArrayList<RoleDto> roles;
 }

@@ -1,7 +1,6 @@
 package com.javatpoint.controllers;
 
 import java.util.Locale;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -12,9 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-
 import com.javatpoint.models.Message;
 import com.javatpoint.repositories.MessageRepository;
 
@@ -24,16 +23,10 @@ public class SimpleController {
     String appName;
     @Autowired
     private MessageRepository messageRepository;
-
-//    @GetMapping("/user/home")
-//    public String userhome(Model model) {
-//        return "userhome";
-//    }
-//    @GetMapping("/admin/home")
-//    public String adminhome(Model model) {
-//        return "adminhome";
-//    }
-
+	@GetMapping(value = "/login")
+	public String showLoginForm(WebRequest request, Model model) {
+	    return "login";
+	}
     @PostMapping("/messages")
     public String saveMessage(Message message) {
         messageRepository.save(message);
@@ -43,12 +36,7 @@ public class SimpleController {
     public String homePage(Model model) {
         model.addAttribute("appName", appName);
         return "home";
-    }
-//    @GetMapping("/login")
-//    public String login(Model model) {
-//        return "login";
-//    }
-//    
+    }  
     @GetMapping("/sample")
     public String showForm() {
         return "sample";
@@ -71,7 +59,7 @@ public class SimpleController {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.US);
+        slr.setDefaultLocale(new Locale("en"));
         return slr;
     }
 

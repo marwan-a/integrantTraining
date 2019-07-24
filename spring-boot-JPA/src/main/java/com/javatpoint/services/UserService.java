@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import com.javatpoint.models.UserRecord;
 import com.javatpoint.repositories.PrivilegeRepository;
 import com.javatpoint.repositories.RoleRepository;
 import com.javatpoint.repositories.UserRepository;
-import com.javatpoint.repositories.ConfirmationTokenRepository;
-import com.javatpoint.verification.ConfirmationToken;
 
 @Service  
 public class UserService implements IUserService  {  
@@ -34,49 +31,24 @@ public class UserService implements IUserService  {
     private PrivilegeRepository privilegeRepository; 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ConfirmationTokenRepository tokenRepository;
     public List<UserRecord> getAllUsers(){  
         List<UserRecord>userRecords = new ArrayList<>();  
         userRepository.findAll().forEach(userRecords::add);  
         return userRecords;  
     }  
-    @Override
-    public UserRecord getUser(String verificationToken) {
-    	UserRecord user = tokenRepository.findByConfirmationToken(verificationToken).getUser();
-        return user;
-    } 
     public Optional<UserRecord> getUser(long id) {
     	Optional<UserRecord> user = userRepository.findById(id);
         return user;
     } 
+	public UserRecord getUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
     public UserRecord addUser(UserRecord userRecord){ 
        userRecord.setPassword(passwordEncoder.encode(userRecord.getPassword()));
        return userRepository.save(userRecord);  
     }  
     public void deleteUser(long id){  
         userRepository.deleteById(id);  
-    }
-    @Override
-    public ConfirmationToken getVerificationToken(String VerificationToken) {
-        return tokenRepository.findByConfirmationToken(VerificationToken);
-    }
-     
-    @Override
-    public void saveRegisteredUser(UserRecord user) {
-    	Session session=HibernateUtil.getSessionFactory().openSession();
-    	Transaction transaction = session.beginTransaction();
-    	session.save(user);
-        transaction.commit();
-    }
-     
-    @Override
-    public void createVerificationToken(UserRecord user, String token) {
-        ConfirmationToken myToken = new ConfirmationToken(user);
-        Session session=HibernateUtil.getSessionFactory().openSession();
-    	Transaction transaction = session.beginTransaction();
-    	session.save(myToken);
-        transaction.commit();
     }
     @Transactional
     @Override
@@ -99,7 +71,6 @@ public class UserService implements IUserService  {
         session.save(userRecord);
         transaction.commit();
         session.close();
-        //HibernateUtil.shutdown();
         return userRecord;
     }
     private boolean emailExist(String email) {
@@ -116,10 +87,8 @@ public class UserService implements IUserService  {
     	Transaction transaction = session.beginTransaction();
 	    Role role = roleRepository.findByName(name);
 	    if (role == null) {
-	    	System.out.println("creating role user service");
 	        role = new Role(name);
 	        role.setPrivileges(privileges);
-	        //roleRepository.save(role);
 	        session.save(role);
 	        transaction.commit();
 	    }
@@ -132,9 +101,7 @@ public class UserService implements IUserService  {
     	Transaction transaction = session.beginTransaction();
         Privilege privilege = privilegeRepository.findByName(name);
         if (privilege == null) {
-	    	System.out.println("creating privilege user service");
             privilege = new Privilege(name);
-            //privilegeRepository.save(privilege);
             session.save(privilege);
             transaction.commit();
         }
@@ -142,5 +109,7 @@ public class UserService implements IUserService  {
         return privilege;
     }
 
-
+	public void updateUser(UserRecord user) {
+		userRepository.save(user);
+	}
 }  
