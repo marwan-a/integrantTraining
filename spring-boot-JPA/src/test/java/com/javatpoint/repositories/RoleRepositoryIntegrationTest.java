@@ -1,0 +1,39 @@
+package com.javatpoint.repositories;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import com.javatpoint.models.Role;
+import com.javatpoint.repositories.RoleRepository;
+
+@DataJpaTest
+public class RoleRepositoryIntegrationTest {
+	@Autowired
+	private TestEntityManager entityManager;
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	@Test
+	public void whenFindByName_thenReturnRole() {
+	    Role role = new Role("Test Case 1 Role");
+	    entityManager.persist(role);
+	    entityManager.flush();
+	    Role found = roleRepository.findByName(role.getName());
+	    assertThat(found.getName()).isEqualTo(role.getName());
+	}
+	@Test
+	public void whenFindById_thenReturnRole() {
+		Role role = new Role("Test Case 2 Role");
+	    entityManager.persist(role);
+	    entityManager.flush();
+	    Optional<Role> found = roleRepository.findById(role.getRole_id());
+	    if(found.isPresent())
+	    	assertThat(found.get().getName()).isEqualTo(role.getName());
+	    else
+	    	assertThat(true).isEqualTo(false);
+	}
+	
+}

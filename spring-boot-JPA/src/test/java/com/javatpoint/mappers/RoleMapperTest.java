@@ -1,4 +1,4 @@
-package com.javatpoint;
+package com.javatpoint.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
