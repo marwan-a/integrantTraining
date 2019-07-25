@@ -10,7 +10,7 @@ import com.javatpoint.models.Role;
 import com.javatpoint.repositories.RoleRepository;
 
 @DataJpaTest
-public class RoleRepositoryIntegrationTest {
+public class RoleRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;
 	@Autowired

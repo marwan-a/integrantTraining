@@ -20,7 +20,7 @@ import com.javatpoint.models.Role;
 import com.javatpoint.repositories.RoleRepository;
 
 @ExtendWith(SpringExtension.class)
-public class RoleServiceIntegrationTest {
+public class RoleServiceTest {
 	 @TestConfiguration
 	    static class RoleServiceIntegrationTestContextConfiguration {
 	  

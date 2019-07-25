@@ -17,7 +17,7 @@ import com.javatpoint.models.Privilege;
 import com.javatpoint.repositories.PrivilegeRepository;
 
 @ExtendWith(SpringExtension.class)
-public class PrivilegeServiceIntegrationTest {
+public class PrivilegeServiceTest {
 	 @TestConfiguration
 	    static class PrivilegeServiceIntegrationTestContextConfiguration {
 	  

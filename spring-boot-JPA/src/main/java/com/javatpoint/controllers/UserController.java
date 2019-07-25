@@ -79,9 +79,8 @@ public class UserController {
 	      .orElseThrow(() -> new UserNotFoundException(id)));
 	  }
 	  @DeleteMapping("/users/{id}")
-	  ResponseEntity<?> deleteUser(@PathVariable Long id) {
+	  void deleteUser(@PathVariable Long id) {
 	    userService.deleteUser(id);
-	    return ResponseEntity.noContent().build();
 	  }
 	  
 		//all users with resource hateaos

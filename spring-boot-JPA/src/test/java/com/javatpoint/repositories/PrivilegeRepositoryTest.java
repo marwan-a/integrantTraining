@@ -12,7 +12,7 @@ import com.javatpoint.models.Privilege;
 import com.javatpoint.repositories.PrivilegeRepository;
 
 @DataJpaTest
-public class PrivilegeRepositoryIntegrationTest {
+public class PrivilegeRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;
 	@Autowired

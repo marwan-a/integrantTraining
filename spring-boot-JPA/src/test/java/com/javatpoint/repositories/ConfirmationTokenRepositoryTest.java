@@ -10,7 +10,7 @@ import com.javatpoint.models.UserRecord;
 import com.javatpoint.repositories.ConfirmationTokenRepository;
 import com.javatpoint.verification.ConfirmationToken;
 @DataJpaTest
-public class ConfirmationTokenRepositoryIntegrationTest {
+public class ConfirmationTokenRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;
 	@Autowired

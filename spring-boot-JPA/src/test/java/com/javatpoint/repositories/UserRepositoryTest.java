@@ -11,7 +11,7 @@ import com.javatpoint.models.UserRecord;
 import com.javatpoint.repositories.UserRepository;
 
 @DataJpaTest
-public class UserRepositoryIntegrationTest {
+public class UserRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;
 	@Autowired

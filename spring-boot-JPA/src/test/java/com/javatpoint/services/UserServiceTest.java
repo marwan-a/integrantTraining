@@ -25,7 +25,7 @@ import com.javatpoint.repositories.RoleRepository;
 import com.javatpoint.repositories.UserRepository;
 
 @ExtendWith(SpringExtension.class)
-public class UserServiceIntegrationTest {
+public class UserServiceTest {
 	@TestConfiguration
     static class UserServiceIntegrationTestContextConfiguration {
   

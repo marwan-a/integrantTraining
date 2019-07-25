@@ -39,6 +39,7 @@ public class LoadDatabase {
 	        UserRecord user = new UserRecord();
 	        user.setEmail("Frodo@mordor.com");
 	        user.setName("Frodo Baggins");
+	        user.setEnabled(true);
 	        user.setPassword("ring1234");
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        user.setRoles(Arrays.asList(adminRole));
@@ -46,6 +47,7 @@ public class LoadDatabase {
 	        UserRecord user2 = new UserRecord();
 	        user2.setEmail("Bilbo@mordor.com");
 	        user2.setName("Bilbo Baggins");
+	        user2.setEnabled(true);
 	        user2.setPassword("ring1234");
 	        user2.setPassword(passwordEncoder.encode(user2.getPassword()));
 	        user2.setRoles(Arrays.asList(userRole));

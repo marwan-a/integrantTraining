@@ -1,10 +1,6 @@
 package com.javatpoint.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
 import static org.mockito.ArgumentMatchers.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +17,7 @@ import com.javatpoint.repositories.ConfirmationTokenRepository;
 import com.javatpoint.verification.ConfirmationToken;
 @ExtendWith(SpringExtension.class)
 
-public class ConfirmationTokenServiceIntegrationTest {
+public class ConfirmationTokenServiceTest {
 	@TestConfiguration
     static class ConfirmationTokenServiceIntegrationTestContextConfiguration {
   
