@@ -80,5 +80,8 @@ public class RegistrationControllerTest {
     	          .attributeHasFieldErrors("user", "name"))
     	             .andExpect( status().isOk() );
     }
+    
+    //confirm account 5 cases testing
+    //resend token => should change controller method to handle exceptions like sending the token
 
 }
