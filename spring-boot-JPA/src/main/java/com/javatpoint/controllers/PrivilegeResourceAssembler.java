@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.javatpoint.dto.PrivilegeDto;
 import com.javatpoint.exceptions.PrivilegeNotFoundException;
 import com.javatpoint.models.Privilege;
+@SuppressWarnings("unused")
 @Component
 public class PrivilegeResourceAssembler implements ResourceAssembler<Privilege, Resource<Privilege>> {
 	  public Resource<Privilege> toResource(Privilege privilege) {

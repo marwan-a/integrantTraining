@@ -34,7 +34,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .usersByUsernameQuery(
                     "SELECT email as username,password,enabled FROM users where email=?")
             .authoritiesByUsernameQuery(
-    "SELECT u.email as username,r.name as user_role from users u inner join users_roles ur on (u.user_id=ur.user_id ) inner join role r on (ur.role_id=r.role_id) where u.email=?");
+    "SELECT u.email as username,r.name as user_role from users u inner join users_roles ur on (u.user_id=ur.user_id ) inner join roles r on (ur.role_id=r.role_id) where u.email=?");
     
     }
  

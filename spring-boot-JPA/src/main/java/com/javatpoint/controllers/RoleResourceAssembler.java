@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.javatpoint.exceptions.RoleNotFoundException;
 import com.javatpoint.models.Role;
+@SuppressWarnings("unused")
 @Component
 public class RoleResourceAssembler implements ResourceAssembler<Role, Resource<Role>>{
 

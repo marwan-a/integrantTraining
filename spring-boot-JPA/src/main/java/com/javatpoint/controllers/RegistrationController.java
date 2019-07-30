@@ -2,7 +2,6 @@ package com.javatpoint.controllers;
 
 
 import java.util.Calendar;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +115,7 @@ public class RegistrationController {
 	            modelAndView.setViewName("invalidToken");
 	        }
 		}
-		catch(EntityNotFoundException e)
+		catch(Exception e)
 		{
 			modelAndView.addObject("message","This account does not exist");
             modelAndView.setViewName("noAccount");

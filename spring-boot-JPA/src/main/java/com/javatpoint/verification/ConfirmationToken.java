@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,6 +24,7 @@ import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "confirmationtoken")
 public class ConfirmationToken {
 	private static final int EXPIRATION = 60 * 24;
 	@Id
@@ -34,7 +36,9 @@ public class ConfirmationToken {
     private String confirmationToken;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="createdDate")
     private Date createdDate;
+    @Column(name="expiryDate")
     private Date expiryDate=calculateExpiryDate(EXPIRATION);
     
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
@@ -56,6 +60,11 @@ public class ConfirmationToken {
 
     public ConfirmationToken(UserRecord user) {	
         this.user = user;
+        createdDate = new Date();
+        confirmationToken = UUID.randomUUID().toString();
+    }
+    public ConfirmationToken() {	
+        this.user = null;
         createdDate = new Date();
         confirmationToken = UUID.randomUUID().toString();
     }

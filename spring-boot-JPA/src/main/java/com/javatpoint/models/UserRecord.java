@@ -22,9 +22,9 @@ import lombok.Data;
 @Table(name="users")
 public class UserRecord {  
 	private @Id  @GeneratedValue long user_id;  
-	private @NotBlank(message = "Name is mandatory",groups = FirstOrder.class) String name;  
-    private @Column(unique=true) @NotBlank(message = "Email is mandatory",groups = FirstOrder.class) @ValidEmail(groups = SecondOrder.class) String email; 
-    private @NotBlank(groups = FirstOrder.class) @ValidPassword(groups = SecondOrder.class) String password;
+	private @Column(name="name") @NotBlank(message = "Name is mandatory",groups = FirstOrder.class) String name;  
+    private @Column(name="email",unique=true) @NotBlank(message = "Email is mandatory",groups = FirstOrder.class) @ValidEmail(groups = SecondOrder.class) String email; 
+    private @Column(name="password") @NotBlank(groups = FirstOrder.class) @ValidPassword(groups = SecondOrder.class) String password;
     private @Column(name = "enabled") boolean enabled;
     @ManyToMany
     @JoinTable( 

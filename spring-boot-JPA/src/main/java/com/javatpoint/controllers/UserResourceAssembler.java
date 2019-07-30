@@ -9,6 +9,7 @@ import com.javatpoint.models.UserRecord;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
+@SuppressWarnings("unused")
 @Component
 public class UserResourceAssembler implements ResourceAssembler<UserRecord, Resource<UserRecord>> {
 
