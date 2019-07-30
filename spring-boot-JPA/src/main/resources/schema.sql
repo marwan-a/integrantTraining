@@ -1,6 +1,3 @@
-
-create database IF NOT EXISTS spring;
-use spring;
 create table IF NOT EXISTS users(
 user_id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
 name varchar(60) not null,
