@@ -9,7 +9,7 @@ public class HibernateUtil {
 //	    if (sessionFactory == null) {
 //	      try {
 //	        StandardServiceRegistryBuilder registryBuilder = 
-//	            new StandardSerx	viceRegistryBuilder();
+//	            new StandardServiceRegistryBuilder();
 //
 //	        Map<String, String> settings = new HashMap<>();
 //	        settings.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
