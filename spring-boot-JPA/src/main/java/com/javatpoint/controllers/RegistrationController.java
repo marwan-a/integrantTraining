@@ -5,7 +5,6 @@ import java.util.Calendar;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -27,12 +26,9 @@ import com.javatpoint.services.ConfirmationTokenService;
 import com.javatpoint.services.EmailSenderService;
 import com.javatpoint.services.UserService;
 import com.javatpoint.validations.ValidationSequence;
-import com.javatpoint.verification.ConfirmationToken;
-import com.javatpoint.web.GenericResponse;;
+import com.javatpoint.verification.ConfirmationToken;;
 @RestController
 public class RegistrationController {
-	@Autowired
-    private MessageSource messages;
 	@Autowired
 	private UserService userService; 
 	@Autowired
@@ -84,43 +80,35 @@ public class RegistrationController {
 	@RequestMapping(value="/confirm-account", method= {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token")String confirmationToken)
     {	
-		try {
-			ConfirmationToken token = confirmationTokenService.getConfirmationToken(confirmationToken);
-	        if(token != null)
-	        {	
-	            UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
-	            if (!user.isEnabled())
-	            {
-	            	Calendar cal = Calendar.getInstance();
-	                if ((token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-	            		modelAndView.addObject("message", "Expired Token");
-	            		modelAndView.setViewName("expiredToken");
-	                }
-	                else
-	                {
-	                    user.setEnabled(true);
-	                	userService.updateUser(user);
-	                    modelAndView.setViewName("accountVerified");
-	                }
-	            }
-	            else
-	            {
-	            	modelAndView.addObject("message", "This account is already verified");
-	        		modelAndView.setViewName("alreadyVerified");
-	            }
-	        }
-	        else
-	        {
-	            modelAndView.addObject("message","The link is invalid or broken!");
-	            modelAndView.setViewName("invalidToken");
-	        }
-		}
-		catch(Exception e)
-		{
-			modelAndView.addObject("message","This account does not exist");
-            modelAndView.setViewName("noAccount");
-            return modelAndView;
-		}
+		ConfirmationToken token = confirmationTokenService.getConfirmationToken(confirmationToken);
+        if(token != null)
+        {	
+            UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
+            if (!user.isEnabled())
+            {
+            	Calendar cal = Calendar.getInstance();
+                if ((token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            		modelAndView.addObject("message", "Expired Token");
+            		modelAndView.setViewName("expiredToken");
+                }
+                else
+                {
+                    user.setEnabled(true);
+                	userService.updateUser(user);
+                    modelAndView.setViewName("accountVerified");
+                }
+            }
+            else
+            {
+            	modelAndView.addObject("message", "This account is already verified");
+        		modelAndView.setViewName("alreadyVerified");
+            }
+        }
+        else
+        {
+            modelAndView.addObject("message","The link is invalid or broken!");
+            modelAndView.setViewName("invalidToken");
+        }
         return modelAndView;
     }
 	private UserRecord createUserAccount(UserDto accountDto) {
@@ -136,23 +124,40 @@ public class RegistrationController {
 // 			Resend Verification
 	@GetMapping(value = "/user/resendRegistrationToken")
 	@ResponseBody
-	public GenericResponse resendRegistrationToken(
+	public ModelAndView resendRegistrationToken(
 	  HttpServletRequest request, @RequestParam("token") String existingToken) {
+		ModelAndView modelAndView=new ModelAndView();
         ConfirmationToken token = confirmationTokenService.getConfirmationToken(existingToken);
-        token.setExpiryDate();
-        confirmationTokenService.updateToken(token);
-	    UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
-	    SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Resend Registration Token");
-        mailMessage.setFrom("marwanayman1998@gmail.com");
-        mailMessage.setText("To confirm your account, please click here : "
-        +"http://localhost:8080/confirm-account?token="+token.getConfirmationToken());
+        if(token!=null)
+        {
+    	    UserRecord user = userService.getUserByEmail(token.getUser().getEmail());
+    	    if(!user.isEnabled())
+    	    {
+    	        token.setExpiryDate();
+    	        confirmationTokenService.updateToken(token);
+    		    SimpleMailMessage mailMessage = new SimpleMailMessage();
+    	        mailMessage.setTo(user.getEmail());
+    	        mailMessage.setSubject("Resend Registration Token");
+    	        mailMessage.setFrom("marwanayman1998@gmail.com");
+    	        mailMessage.setText("To confirm your account, please click here : "
+    	        +"http://localhost:8080/confirm-account?token="+token.getConfirmationToken());
 
-        emailSenderService.sendEmail(mailMessage);
-	 
-	    return new GenericResponse(
-	      messages.getMessage("message.resendToken", null, request.getLocale()));
+    	        emailSenderService.sendEmail(mailMessage);
+    	        modelAndView.addObject("emailId", user.getEmail());
+    	        modelAndView.setViewName("successfulRegisteration");
+    	    }
+    	    else
+    	    {	
+    	    	modelAndView.addObject("message", "This account is already verified");
+        		modelAndView.setViewName("alreadyVerified");
+    	    }
+        }
+        else
+        {
+            modelAndView.addObject("message","The link is invalid or broken!");
+            modelAndView.setViewName("invalidToken");
+        }
+		return modelAndView;
 	}
 	
 }

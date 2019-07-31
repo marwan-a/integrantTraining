@@ -110,7 +110,7 @@ public class UserServiceTest {
 	          .isEqualTo(name);
      }
     @Test
-    public void whenRegisterExistsingUser_thenUserShouldBeRegistered() {
+    public void whenRegisterExistsingUser_thenUserShouldBeNotRegistered() {
         String name = "User Test 1";
         UserDto user=new UserDto();
         user.setName(name);

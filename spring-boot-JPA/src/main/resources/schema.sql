@@ -35,7 +35,3 @@ create table IF NOT EXISTS confirmationtoken(
 `user_id` int,
 foreign key(`user_id`) references users(`user_id`) on delete cascade on update cascade
 );
-create table IF NOT EXISTS messages(
-`id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-`content` varchar(200) not null
-);
