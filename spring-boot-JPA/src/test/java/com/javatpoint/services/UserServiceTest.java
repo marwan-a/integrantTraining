@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.javatpoint.dto.UserDto;
 import com.javatpoint.exceptions.EmailExistsException;
+import com.javatpoint.exceptions.PasswordsNotMatchingException;
 import com.javatpoint.models.UserRecord;
 import com.javatpoint.repositories.PrivilegeRepository;
 import com.javatpoint.repositories.RoleRepository;
@@ -99,12 +100,13 @@ public class UserServiceTest {
           .isEqualTo(name2);
      }
     @Test
-    public void whenRegisterUser_thenUserShouldBeRegistered() throws EmailExistsException {
+    public void whenRegisterUser_thenUserShouldBeRegistered() throws EmailExistsException, PasswordsNotMatchingException {
         String name = "User Test 1";
         UserDto user=new UserDto();
         user.setName(name);
         user.setEmail("user3@email.com");
         user.setPassword("pass1234");
+        user.setMatchingPassword("pass1234");
         UserRecord found=userService.registerNewUserAccount(user);
 			assertThat(found.getName())
 	          .isEqualTo(name);
@@ -124,6 +126,9 @@ public class UserServiceTest {
 		} catch (EmailExistsException e) {
 			assertThat(true)
 	          .isEqualTo(true);
+		} catch (PasswordsNotMatchingException e) {
+			assertThat(true)
+	          .isEqualTo(false);
 		}
      }
 }

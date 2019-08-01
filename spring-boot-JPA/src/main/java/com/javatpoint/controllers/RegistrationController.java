@@ -21,6 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import com.javatpoint.dto.UserDto;
 import com.javatpoint.exceptions.EmailExistsException;
+import com.javatpoint.exceptions.PasswordsNotMatchingException;
 import com.javatpoint.models.UserRecord;
 import com.javatpoint.services.ConfirmationTokenService;
 import com.javatpoint.services.EmailSenderService;
@@ -55,7 +56,16 @@ public class RegistrationController {
 	        return new ModelAndView("registration", "user", accountDto);
 	    }
 	     
-	    UserRecord registered = createUserAccount(accountDto);
+	    UserRecord registered = null;
+	    try {
+	        registered = userService.registerNewUserAccount(accountDto);
+	    } catch (EmailExistsException e) {
+	    	result.rejectValue("email", "email.registered");
+	        return new ModelAndView("registration", "user", accountDto);
+	    } catch (PasswordsNotMatchingException e) {
+	    	result.rejectValue("matchingPassword", "matchingPassword.notMatch");
+	        return new ModelAndView("registration", "user", accountDto);
+		}
 	    if (registered == null) {
 	        result.rejectValue("email", "email.registered");
 	        return new ModelAndView("registration", "user", accountDto);
@@ -111,15 +121,6 @@ public class RegistrationController {
         }
         return modelAndView;
     }
-	private UserRecord createUserAccount(UserDto accountDto) {
-		UserRecord registered = null;
-	    try {
-	        registered = userService.registerNewUserAccount(accountDto);
-	    } catch (EmailExistsException e) {
-	        return null;
-	    }
-	    return registered;
-	}
 	
 // 			Resend Verification
 	@GetMapping(value = "/user/resendRegistrationToken")

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.javatpoint.dto.UserDto;
 import com.javatpoint.exceptions.EmailExistsException;
+import com.javatpoint.exceptions.PasswordsNotMatchingException;
 import com.javatpoint.models.Privilege;
 import com.javatpoint.models.Role;
 import com.javatpoint.models.UserRecord;
@@ -50,11 +51,15 @@ public class UserService implements IUserService  {
     @Transactional
     @Override
     public UserRecord registerNewUserAccount(UserDto accountDto) 
-      throws EmailExistsException {
+      throws EmailExistsException, PasswordsNotMatchingException {
         if (emailExist(accountDto.getEmail())) {  
             throw new EmailExistsException(
               "There is an account with that email adress: "
               +  accountDto.getEmail());
+        }
+        if (!passwordsMatch(accountDto.getPassword(),accountDto.getMatchingPassword())) {  
+            throw new PasswordsNotMatchingException(
+              "Passwords Don't match");
         }
 //        Session session=HibernateUtil.getSessionFactory().openSession();
 //    	Transaction transaction = session.beginTransaction();
@@ -70,7 +75,10 @@ public class UserService implements IUserService  {
 //        session.close();
         return userRecord;
     }
-    private boolean emailExist(String email) {
+    private boolean passwordsMatch(String password, String matchingPassword) {
+		return password.equals(matchingPassword) ? true : false;
+	}
+	private boolean emailExist(String email) {
     	UserRecord user = userRepository.findByEmail(email);
         if (user != null) {
             return true;
