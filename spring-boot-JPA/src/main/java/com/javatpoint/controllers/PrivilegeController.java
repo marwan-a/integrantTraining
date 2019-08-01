@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -20,10 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.javatpoint.dto.MyMapper;
 import com.javatpoint.dto.PrivilegeDto;
 import com.javatpoint.exceptions.PrivilegeNotFoundException;
+import com.javatpoint.mappers.PrivilegeMapper;
 import com.javatpoint.models.Privilege;
 import com.javatpoint.services.PrivilegeService;
 
@@ -33,8 +31,8 @@ public class PrivilegeController {
 	@Autowired  
     private PrivilegeService privilegeService; 
 	private  PrivilegeResourceAssembler assembler; 
-	private MyMapper mapper
-    = Mappers.getMapper(MyMapper.class);
+	private PrivilegeMapper mapper
+    = Mappers.getMapper(PrivilegeMapper.class);
 	PrivilegeController(PrivilegeService privilegeService,
 			PrivilegeResourceAssembler assembler) {
 

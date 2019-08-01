@@ -8,5 +8,5 @@ import lombok.Data;
 public class RoleDto {
 	private long role_id;
 	private String name;
-	private ArrayList<PrivilegeDto> privileges;
+	private ArrayList<String> privileges;
 }

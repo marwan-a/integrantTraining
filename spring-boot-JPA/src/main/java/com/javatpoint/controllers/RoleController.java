@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -19,13 +18,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.javatpoint.dto.MyMapper;
 import com.javatpoint.dto.PrivilegeDto;
 import com.javatpoint.dto.RoleDto;
 import com.javatpoint.exceptions.RoleNotFoundException;
+import com.javatpoint.mappers.RoleMapper;
 import com.javatpoint.models.Privilege;
 import com.javatpoint.models.Role;
+import com.javatpoint.services.PrivilegeService;
 import com.javatpoint.services.RoleService;
 @SuppressWarnings("unused")
 @RestController
@@ -33,9 +32,11 @@ public class RoleController {
 
 	@Autowired  
     private RoleService roleService; 
+	@Autowired  
+    private PrivilegeService privilegeService; 
 	private RoleResourceAssembler assembler; 
-	private MyMapper mapper
-    = Mappers.getMapper(MyMapper.class);
+	private RoleMapper mapper
+    = Mappers.getMapper(RoleMapper.class);
 	RoleController(RoleService roleService,
 			RoleResourceAssembler assembler) {
 
@@ -45,16 +46,16 @@ public class RoleController {
 
 	  @GetMapping("/roles")
 	  ArrayList<RoleDto> getAllRoles() {
-	    return mapper.rolesToDtos(roleService.getAllRoles());
+	    return mapper.rolesToDtos(roleService.getAllRoles(), privilegeService);
 	  }
 	  @PostMapping("/admin/roles/addrole")
-	  RoleDto newRole(@RequestBody RoleDto newRole) {
-	    return mapper.roleToDto(roleService.addRole(mapper.dtoToRole(newRole)));
+	  RoleDto newRole(@RequestBody Role newRole) {
+	    return mapper.roleToDto(roleService.addRole(newRole), privilegeService);
 	  }
 	  @GetMapping("/roles/{id}")
 	  RoleDto getRole(@PathVariable Long id) throws RoleNotFoundException {
 		  return mapper.roleToDto(roleService.getRole(id)
-			      .orElseThrow(() -> new RoleNotFoundException(id)));
+			      .orElseThrow(() -> new RoleNotFoundException(id)), privilegeService);
 	  }
 	  @DeleteMapping("/admin/roles/{id}")
 	  void deleteRole(@PathVariable Long id) {

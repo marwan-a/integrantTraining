@@ -28,11 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javatpoint.dto.MyMapper;
+//import com.javatpoint.dto.MyMapper;
 import com.javatpoint.dto.UserFront;
 import com.javatpoint.exceptions.UserNotFoundException;
+import com.javatpoint.mappers.UserMapper;
 import com.javatpoint.models.Role;
 import com.javatpoint.models.UserRecord;
+import com.javatpoint.services.RoleService;
 import com.javatpoint.services.UserService;
 import com.javatpoint.validations.ValidationSequence;
 
@@ -42,9 +44,11 @@ import com.javatpoint.validations.ValidationSequence;
 public class UserController {  
 	@Autowired  
     private UserService userService; 
+	@Autowired  
+    private RoleService roleService;
 	private  UserResourceAssembler assembler; 
-	private MyMapper mapper
-    = Mappers.getMapper(MyMapper.class);
+	private UserMapper mapper
+    = Mappers.getMapper(UserMapper.class);
 	UserController(UserService userService,
 			UserResourceAssembler assembler) {
 
@@ -54,12 +58,12 @@ public class UserController {
 
 	@GetMapping("/users")
 	  ArrayList<UserFront> getAllUsers() {
-		return mapper.usersToFronts(userService.getAllUsers());
+		return mapper.usersToFronts(userService.getAllUsers(),roleService);
 	  }
 
     @PostMapping("/admin/users/adduser")
     UserFront newUser(@Validated(ValidationSequence.class) @RequestBody UserRecord newUser) {
-	    return mapper.userToFront(userService.addUser(newUser));
+	    return mapper.userToFront(userService.addUser(newUser), roleService);
 	  }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,7 +80,7 @@ public class UserController {
     @GetMapping("/users/{id}")
 	  UserFront getUser(@PathVariable Long id) throws UserNotFoundException {
 	    return mapper.userToFront(userService.getUser(id)
-	      .orElseThrow(() -> new UserNotFoundException(id)));
+	      .orElseThrow(() -> new UserNotFoundException(id)), roleService);
 	  }
 	  @DeleteMapping("/users/{id}")
 	  void deleteUser(@PathVariable Long id) {
