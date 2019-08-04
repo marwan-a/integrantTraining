@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Expired Token</title>
+</head>
+<body>
+<h1 th:text="${message}">error</h1>
+<br>
+ 
+<div>
+<h1>Resend Verification Token</h1>
+<script>
+function resendToken() {
+	const urlParams = new URLSearchParams(window.location.search);
+	const token = urlParams.get('token');
+	window.location.href =window.location.origin+"/user/resendRegistrationToken?token=" + token;
+}
+</script>
+<button type="button" id="myButton" onclick="resendToken()">Resend Verification Token</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<html>
+<head>
+<title>Account does not exist</title>
+</head>
+<body>
+<h1 th:text="${message}">error</h1>
+<br>
+<form id = "signup" th:action = "@{/user/registration}"  method="get">
+
+    <div class="col-xs-12 col-sm-6 col-md-6">
+    <button type="submit" class="btn btn-success">Sign Up</button>
+    </div>
+
+</form>
+</body>
+</html>
