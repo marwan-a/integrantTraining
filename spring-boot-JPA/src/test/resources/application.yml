@@ -1,0 +1,33 @@
+spring:
+    application:
+      name: Marwan App
+    main:      allow-bean-definition-overriding: true
+    thymeleaf:
+      cache: false
+      enabled: true
+      prefix: classpath:/templates/
+      suffix: .html
+    datasource:
+      url: jdbc:mysql://localhost:3306/springtest?createDatabaseIfNotExist=true
+      username: root
+      password: marwan
+      initialization-mode: always
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5Dialect
+          id:
+            new_generator_mappings: false
+      hibernate:
+        ddl-auto: none
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: marwanayman1998@gmail.com
+      password:  evkqolavxbevygrx
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true

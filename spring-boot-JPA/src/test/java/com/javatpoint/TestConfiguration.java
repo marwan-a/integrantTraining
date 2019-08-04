@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @org.springframework.boot.test.context.TestConfiguration
 @EnableJpaRepositories(basePackages = "com.javatpoint.repositories")
-@PropertySource("application.properties")
+@PropertySource("application.yml")
 @EnableTransactionManagement
 public class TestConfiguration {
 	   @Bean
