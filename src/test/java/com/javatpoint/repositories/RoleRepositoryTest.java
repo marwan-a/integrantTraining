@@ -10,8 +10,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import com.javatpoint.TestConfiguration;
 import com.javatpoint.models.Role;
 import com.javatpoint.repositories.RoleRepository;
@@ -19,9 +19,9 @@ import com.javatpoint.repositories.RoleRepository;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
 		  classes = { TestConfiguration.class })
-@Sql({"/test-schema.sql", "/test-data.sql"})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace=Replace.NONE)
+@ActiveProfiles("test")
 public class RoleRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;

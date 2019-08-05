@@ -9,14 +9,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Date;
 
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -32,7 +38,10 @@ import com.javatpoint.verification.ConfirmationToken;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
 		  classes = { TestConfiguration.class })
-@Sql({"/test-schema.sql", "/test-data.sql"})
+//@Sql({"/test-schema.sql", "/test-data.sql"})
+@ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ComponentScan(excludeFilters=@Filter(type = FilterType.REGEX, pattern="com.javatpoint.LoadDatabase*"))
 public class RegistrationControllerTest {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -45,6 +54,7 @@ public class RegistrationControllerTest {
 		  mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
     @Test
+    @Order(1)
     public void whenGetRegistrationForm_thenRegistration() throws Exception
     {
     	String viewName=mockMvc.perform(get("/user/registration")).andReturn().getModelAndView().getViewName();
@@ -52,6 +62,7 @@ public class RegistrationControllerTest {
          .isEqualTo("registration");
     }
     @Test
+    @Order(11)
     public void whenPostSuccessfulRegistrationForm_thenOk() throws Exception
     {
       UserDto user = new UserDto();
@@ -64,6 +75,7 @@ public class RegistrationControllerTest {
       .isEqualTo("successfulRegisteration");
     }
     @Test
+    @Order(3)
     public void whenPostAlreadyRegisteredRegistrationForm_thenOk() throws Exception
     {	
     	//Frodo@mordor.com is already registered
@@ -80,6 +92,7 @@ public class RegistrationControllerTest {
     	             .andExpect( status().isOk() );
     }
     @Test
+    @Order(2)
     public void whenPostUnsuccessfulRegistrationForm_thenOk() throws Exception
     {	
     	// Name is Blank
@@ -95,6 +108,7 @@ public class RegistrationControllerTest {
     	             .andExpect( status().isOk() );
     }
     @Test
+    @Order(4)
     public void whenConfirmAccountInvalidToken_thenInvalidToken() throws Exception
     {	
       	ModelAndView modelAndView=this.mockMvc.perform( 
@@ -106,9 +120,10 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(5)
     public void whenConfirmAccountAlreadyVerified_thenAlreadyVerified() throws Exception
     {	
-    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 1).get();
+    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 8).get();
     	String token=conn.getConfirmationToken();
       	ModelAndView modelAndView=this.mockMvc.perform( 
       			  post("/confirm-account")
@@ -119,9 +134,10 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(8)
     public void whenConfirmAccountNotVerified_thenAccountVerified() throws Exception
     {	
-    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 2).get();
+    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 9).get();
     	String token=conn.getConfirmationToken();
       	ModelAndView modelAndView=this.mockMvc.perform( 
       			  post("/confirm-account")
@@ -132,9 +148,10 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(6)
     public void whenConfirmAccountExpiredToken_thenExpiredToken() throws Exception
     {	
-    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 2).get();
+    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 9).get();
     	String token=conn.getConfirmationToken();
         conn.setExpiryDate(new Date(new Long(1000000L)));
         confirmationTokenService.updateToken(conn);
@@ -147,9 +164,10 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(7)
     public void whenResendTokenNotVerified_thenOk() throws Exception
     {	
-    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 2).get();
+    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 9).get();
     	String token=conn.getConfirmationToken();
       	ModelAndView modelAndView=this.mockMvc.perform( 
       			  get("/user/resendRegistrationToken")
@@ -160,9 +178,10 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(9)
     public void whenResendTokenAlreadyVerified_thenAlreadyVerified() throws Exception
     {	
-    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 1).get();
+    	ConfirmationToken conn=confirmationTokenService.getConfirmationTokenById((long) 8).get();
     	String token=conn.getConfirmationToken();
       	ModelAndView modelAndView=this.mockMvc.perform( 
       			  get("/user/resendRegistrationToken")
@@ -173,6 +192,7 @@ public class RegistrationControllerTest {
     }
     @Test
     @WithUserDetails("Frodo@mordor.com")
+    @Order(11)
     public void whenResendTokenInvalidToken_thenInvalidToken() throws Exception
     {	
       	ModelAndView modelAndView=this.mockMvc.perform( 
@@ -182,6 +202,4 @@ public class RegistrationControllerTest {
       	assertThat(modelAndView.getViewName())
           .isEqualTo("invalidToken");
     }
-    //3 resend registration token cases
-
 }

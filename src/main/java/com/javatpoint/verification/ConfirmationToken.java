@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -54,7 +55,7 @@ public class ConfirmationToken {
         cal.add(Calendar.MINUTE, EXPIRATION);
         expiryDate=new Date(cal.getTime().getTime());
     }
-    @OneToOne(targetEntity = UserRecord.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = UserRecord.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false, name = "user_id")
     private UserRecord user;
 

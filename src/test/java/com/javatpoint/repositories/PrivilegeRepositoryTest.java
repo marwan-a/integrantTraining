@@ -11,8 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.javatpoint.TestConfiguration;
@@ -22,9 +22,10 @@ import com.javatpoint.repositories.PrivilegeRepository;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(
 		  classes = { TestConfiguration.class })
-@Sql({"/test-schema.sql", "/test-data.sql"})
+//@Sql({"/test-schema.sql", "/test-data.sql"})
 @DataJpaTest
 @AutoConfigureTestDatabase(replace=Replace.NONE)
+@ActiveProfiles("test")
 public class PrivilegeRepositoryTest {
 	@Autowired
 	private TestEntityManager entityManager;

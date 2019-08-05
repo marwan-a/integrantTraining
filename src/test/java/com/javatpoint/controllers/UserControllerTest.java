@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -28,7 +28,8 @@ import com.javatpoint.models.UserRecord;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
 		  classes = { TestConfiguration.class })
-@Sql({"/test-schema.sql", "/test-data.sql"})
+//@Sql({"/test-schema.sql", "/test-data.sql"})
+@ActiveProfiles("test")
 public class UserControllerTest {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -51,7 +52,7 @@ public class UserControllerTest {
     @WithUserDetails("Frodo@mordor.com")
     public void givenUser_whenGetUser_thenOk() throws Exception
     {
-    	mockMvc.perform(get("/users/1")
+    	mockMvc.perform(get("/users/5")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("name", is("Frodo Baggins")));
@@ -61,7 +62,7 @@ public class UserControllerTest {
     public void givenAdmin_whenDeleteUser_thenOk() throws Exception
     {
     	this.mockMvc.perform(MockMvcRequestBuilders
-                .delete("/users/{id}", "3")
+                .delete("/users/{id}", "7")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

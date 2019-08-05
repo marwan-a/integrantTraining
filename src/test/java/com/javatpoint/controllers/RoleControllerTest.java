@@ -6,6 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,7 +32,9 @@ import com.javatpoint.dto.RoleDto;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(
 		  classes = { TestConfiguration.class })
-@Sql({"/test-schema.sql", "/test-data.sql"})
+//@Sql({"/test-schema.sql", "/test-data.sql"})
+@ActiveProfiles("test")
+@ComponentScan(excludeFilters=@Filter(type = FilterType.REGEX, pattern="com.javatpoint.LoadDatabase*"))
 public class RoleControllerTest {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -52,7 +57,7 @@ public class RoleControllerTest {
     @WithUserDetails("Frodo@mordor.com")
     public void givenUser_whenGetRole_thenOk() throws Exception
     {
-    	mockMvc.perform(get("/roles/1")
+    	mockMvc.perform(get("/roles/3")
           .contentType(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andExpect(jsonPath("name", is("ROLE_ADMIN")));
@@ -62,7 +67,7 @@ public class RoleControllerTest {
     public void givenAdmin_whenDeleteRole_thenOk() throws Exception
     {
     	this.mockMvc.perform(MockMvcRequestBuilders
-                .delete("/admin/roles/{id}", "2")
+                .delete("/admin/roles/{id}", "4")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
