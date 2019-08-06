@@ -60,13 +60,20 @@ public class DataLoader implements ApplicationRunner {
 		sam.setEnabled(true);
 		frodo.setRoles(Arrays.asList(admin));
 		bilbo.setRoles(Arrays.asList(user));
-		sam.setRoles(Arrays.asList(admin));
+		sam.setRoles(Arrays.asList(user));
 		userRepository.save(frodo); //id=5
 		userRepository.save(bilbo); //id=6
 		userRepository.save(sam); 	//id=7
 		ConfirmationToken token1=new ConfirmationToken(frodo);
 		ConfirmationToken token2= new ConfirmationToken(bilbo);
 		confirmationTokenRepository.save(token1); //id=8
-		confirmationTokenRepository.save(token2); //id=9	
+		confirmationTokenRepository.save(token2); //id=9
+		UserRecord temp=new UserRecord();
+		temp.setName("temp");
+		temp.setEmail("temp2@mordor.com");
+		temp.setPassword(passwordEncoder.encode("ring1234"));
+		temp.setEnabled(true);
+		temp.setRoles(Arrays.asList(user));
+		userRepository.save(temp); //id =10
 	}
 }
