@@ -67,7 +67,7 @@ public class RoleControllerTest {
     public void givenAdmin_whenDeleteRole_thenOk() throws Exception
     {
     	this.mockMvc.perform(MockMvcRequestBuilders
-                .delete("/admin/roles/{id}", "4")
+                .delete("/admin/roles/{id}", "11")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -77,7 +77,7 @@ public class RoleControllerTest {
     public void givenAdmin_whenAddRole_thenOk() throws Exception 
     {
     	RoleDto role = new RoleDto();
-    	role.setName("Test");
+    	role.setName("Test2");
 
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(role);
@@ -86,6 +86,6 @@ public class RoleControllerTest {
                 .content(json)
                 .characterEncoding("utf-8"))
     			.andExpect(status().isOk())
-    			.andExpect(jsonPath("name", is("Test")));
+    			.andExpect(jsonPath("name", is("Test2")));
     }
 }

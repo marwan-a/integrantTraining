@@ -72,8 +72,17 @@ public class DataLoader implements ApplicationRunner {
 		temp.setName("temp");
 		temp.setEmail("temp2@mordor.com");
 		temp.setPassword(passwordEncoder.encode("ring1234"));
-		temp.setEnabled(true);
+		temp.setEnabled(false);
 		temp.setRoles(Arrays.asList(user));
 		userRepository.save(temp); //id =10
+		Role test= new Role("ROLE_TEST");
+		roleRepository.save(test); //id=11
+		UserRecord temp3=new UserRecord();
+		temp3.setName("temp3");
+		temp3.setEmail("temp3@mordor.com");
+		temp3.setPassword(passwordEncoder.encode("ring1234"));
+		temp3.setEnabled(true);
+		temp3.setRoles(Arrays.asList(user));
+		userRepository.save(temp3); //id =12
 	}
 }

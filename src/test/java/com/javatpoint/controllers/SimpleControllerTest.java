@@ -60,13 +60,13 @@ public class SimpleControllerTest {
 				.perform(formLogin("/login").user("Frodo@mordor.com").password("ring1234"))
 				.andExpect(authenticated().withRoles("ADMIN"));
     }
-//	@Test
-//    public void whenSuccessfulUserLogin_thenUser() throws Exception
-//    {	
-//		mockMvc
-//				.perform(formLogin("/login").user("temp2@mordor.com").password("ring1234"))
-//				.andExpect(authenticated().withRoles("USER"));
-//    }
+	@Test
+    public void whenSuccessfulUserLogin_thenUser() throws Exception
+    {	
+		mockMvc
+				.perform(formLogin("/login").user("temp3@mordor.com").password("ring1234"))
+				.andExpect(authenticated().withRoles("USER"));
+    }
 	@Test
     public void whenUnsuccessfulLogin_thenUnauthenticated() throws Exception
     {	
@@ -78,7 +78,7 @@ public class SimpleControllerTest {
     public void whenNotEnabledLogin_thenUnauthenticated() throws Exception
     {	
 		mockMvc
-				.perform(formLogin("/login").user("Bilbo@mordor.com").password("ring1234"))
+				.perform(formLogin("/login").user("temp2@mordor.com").password("ring1234"))
 				.andExpect(unauthenticated());
     }
 	@Test
