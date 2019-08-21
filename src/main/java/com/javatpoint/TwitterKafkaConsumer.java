@@ -1,5 +1,8 @@
 package com.javatpoint;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,15 +14,21 @@ import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
 public class TwitterKafkaConsumer {
     private ConsumerConnector consumerConnector = null;
-    private final String topic = "twitter topic";
+    private final String topic = "twitter-topic";
+    private final File f=new File("output.txt");
     public void initialize() {
           Properties props = new Properties();
+          props.put("auto.offset.reset", "largest");
           props.put("zookeeper.connect", "localhost:2181");
           props.put("zookeeper.session.timeout.ms", "400");
           props.put("zookeeper.sync.time.ms", "300");
-          props.put("auto.commit.interval.ms", "100");
+          props.put("group.id", "2");
+          props.put("auto.commit.interval.ms", "1000");
           ConsumerConfig conConfig = new ConsumerConfig(props);
           consumerConnector = Consumer.createJavaConsumerConnector(conConfig);
+          if (f.exists())
+        	  f.delete();
+          
     }
     public void consume() {
           //Key = topic name, Value = No. of threads for topic
@@ -35,8 +44,24 @@ public class TwitterKafkaConsumer {
           for (final KafkaStream<byte[], byte[]> kStreams : kStreamList) {
                  ConsumerIterator<byte[], byte[]> consumerIte = kStreams.iterator();
                  while (consumerIte.hasNext())
-                        System.out.println("Message consumed from topic[" + topic + "] : "       +
-                                        new String(consumerIte.next().message()));
+                 {	String out="Message consumed from topic[" + topic + "] : "       +
+                         new String(consumerIte.next().message());
+                     System.out.println(out);
+                	 FileWriter fr = null;
+                     try {
+                         fr = new FileWriter(f,true);
+                         fr.write(out);
+                     } catch (IOException e) {
+                         e.printStackTrace();
+                     }finally{
+                         //close resources
+                         try {
+                             fr.close();
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+                     }
+                 }
           }
           //Shutdown the consumer connector
           if (consumerConnector != null)   consumerConnector.shutdown();
