@@ -50,7 +50,7 @@ public class TwitterKafkaConsumer {
                 	 FileWriter fr = null;
                      try {
                          fr = new FileWriter(f,true);
-                         fr.write(out);
+                         fr.write(out+System.getProperty("line.separator"));
                      } catch (IOException e) {
                          e.printStackTrace();
                      }finally{
