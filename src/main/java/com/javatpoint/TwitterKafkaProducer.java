@@ -85,10 +85,10 @@ public class TwitterKafkaProducer {
                         	  text=JsonPath.parse(msg).read("extended_tweet.full_text");
                           else
                         	  text=JsonPath.parse(msg).read("text");                 
-                          System.out.println(text);
-                          System.out.println("Sentiment score: " + getSentimentResult(text).getSentimentScore());
-                          System.out.println("Sentiment type: " + getSentimentResult(text).getSentimentType());
-                          message = new KeyedMessage<String, String> (topic, text);
+                          String toSend=text+System.getProperty("line.separator")
+                          			+"Sentiment score: " + getSentimentResult(text).getSentimentScore()+System.getProperty("line.separator")
+                          			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
+                          message = new KeyedMessage<String, String> (topic, toSend);
                           producer.send(message);
                       }
 
