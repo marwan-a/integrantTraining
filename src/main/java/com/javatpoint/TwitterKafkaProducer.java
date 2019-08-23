@@ -59,7 +59,7 @@ public class TwitterKafkaProducer {
         BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
         StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
         //add some track terms
-        endpoint.trackTerms(Lists.newArrayList("oil", "trump"));
+        endpoint.trackTerms(Lists.newArrayList("sad","angry", "trump","laugh","congratulations"));
         Authentication auth = new OAuth1(consumerKey,consumerSecret,token,secret);
         //create a new BasicClient. By default gzip is enabled.
         Client client = new ClientBuilder()
@@ -76,22 +76,25 @@ public class TwitterKafkaProducer {
 
                       String msg = queue.take();
                       //only english tweets
-                      if(JsonPath.parse(msg).read("lang").equals("en"))
-                      {
-                          String text;
-                    	  //check for extended tweet
-                          boolean truncated=JsonPath.parse(msg).read("truncated");
-                          if(truncated)
-                        	  text=JsonPath.parse(msg).read("extended_tweet.full_text");
-                          else
-                        	  text=JsonPath.parse(msg).read("text");                 
-                          String toSend=text+System.getProperty("line.separator")
-                          			+"Sentiment score: " + getSentimentResult(text).getSentimentScore()+System.getProperty("line.separator")
-                          			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
-                          message = new KeyedMessage<String, String> (topic, toSend);
-                          producer.send(message);
-                      }
-
+                      try {
+                    	  if(JsonPath.parse(msg).read("lang").equals("en"))
+                          {
+                              String text;
+                        	  //check for extended tweet
+                              boolean truncated=JsonPath.parse(msg).read("truncated");
+                              if(truncated)
+                            	  text=JsonPath.parse(msg).read("extended_tweet.full_text");
+                              else
+                            	  text=JsonPath.parse(msg).read("text");                 
+                              String toSend=text+System.getProperty("line.separator")
+                              			+"Sentiment score: " + getSentimentResult(text).getSentimentScore()+System.getProperty("line.separator")
+                              			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
+                              message = new KeyedMessage<String, String> (topic, toSend);
+                              producer.send(message);
+                          }
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
                       } catch (InterruptedException e) {
                                      e.getStackTrace();
                       }
