@@ -1,5 +1,7 @@
 package com.javatpoint;
 
+import java.util.ArrayList;
+
 //import java.util.Properties;
 //import java.util.concurrent.BlockingQueue;
 //import java.util.concurrent.LinkedBlockingQueue;
@@ -47,12 +49,16 @@ public class TwitterKafkaProducer {
 	private static final String topic = "twitter-topic";
 	static Properties props;
 	static StanfordCoreNLP pipeline;
+	private static ArrayList<MyEventListener> listeners = new ArrayList<MyEventListener>();
 	public static void initializeSentiment() {
 		 // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and sentiment
 		props = new Properties();
 		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
 		pipeline = new StanfordCoreNLP(props);
 	}
+	public static void addListener(MyEventListener toAdd) {
+        listeners.add(toAdd);
+    }
 	public static void PushTwittermessage(Producer<String, String> producer, String consumerKey, String consumerSecret, String token, String secret) throws InterruptedException {
 		
         KeyedMessage<String, String> message=null;
@@ -85,12 +91,15 @@ public class TwitterKafkaProducer {
                               if(truncated)
                             	  text=JsonPath.parse(msg).read("extended_tweet.full_text");
                               else
-                            	  text=JsonPath.parse(msg).read("text");                 
+                            	  text=JsonPath.parse(msg).read("text");     
+                              double sentiment_score=getSentimentResult(text).getSentimentScore();
                               String toSend=text+System.getProperty("line.separator")
                               			+"Sentiment score: " + getSentimentResult(text).getSentimentScore()+System.getProperty("line.separator")
                               			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
                               message = new KeyedMessage<String, String> (topic, toSend);
                               producer.send(message);
+                              for (MyEventListener hl : listeners)
+                                  hl.onMyEvent(new TwitterEvent(JsonPath.parse(msg).read("id_str"),text,sentiment_score));
                           }
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -144,6 +153,8 @@ public class TwitterKafkaProducer {
 		TwitterKafkaProducer.initializeSentiment();
        ProducerConfig producerConfig = new ProducerConfig(props);
        Producer<String, String>producer = new Producer<String, String>(producerConfig);
+       MyEventHandler mev=new MyEventHandler();
+       TwitterKafkaProducer.addListener(mev);
        try {	
                       TwitterKafkaProducer.PushTwittermessage(producer,args[0], args[1], args[2], args[3]);
        } catch(InterruptedException e) {
