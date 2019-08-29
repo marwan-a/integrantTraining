@@ -1,28 +1,13 @@
 package com.javatpoint;
 
-import java.util.ArrayList;
-
-//import java.util.Properties;
-//import java.util.concurrent.BlockingQueue;
-//import java.util.concurrent.LinkedBlockingQueue;
-//
-//import kafka.producer.KeyedMessage;
-//import kafka.producer.ProducerConfig;
-//
-//import com.google.common.collect.Lists;
-//import com.twitter.hbc.ClientBuilder;
-//import com.twitter.hbc.core.Client;
-//import com.twitter.hbc.core.Constants;
-//import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
-//import com.twitter.hbc.core.processor.StringDelimitedProcessor;
-//import com.twitter.hbc.httpclient.auth.Authentication;
-//import com.twitter.hbc.httpclient.auth.OAuth1;
-
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.ejml.simple.SimpleMatrix;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 import com.jayway.jsonpath.JsonPath;
@@ -45,21 +30,20 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 
+@Component
 public class TwitterKafkaProducer {
+	@Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 	private static final String topic = "twitter-topic";
 	static Properties props;
 	static StanfordCoreNLP pipeline;
-	private static ArrayList<MyEventListener> listeners = new ArrayList<MyEventListener>();
-	public static void initializeSentiment() {
+	public void initializeSentiment() {
 		 // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and sentiment
 		props = new Properties();
 		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
 		pipeline = new StanfordCoreNLP(props);
 	}
-	public static void addListener(MyEventListener toAdd) {
-        listeners.add(toAdd);
-    }
-	public static void PushTwittermessage(Producer<String, String> producer, String consumerKey, String consumerSecret, String token, String secret) throws InterruptedException {
+	public void PushTwittermessage(Producer<String, String> producer, String consumerKey, String consumerSecret, String token, String secret) throws InterruptedException {
 		
         KeyedMessage<String, String> message=null;
         BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
@@ -98,8 +82,8 @@ public class TwitterKafkaProducer {
                               			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
                               message = new KeyedMessage<String, String> (topic, toSend);
                               producer.send(message);
-                              for (MyEventListener hl : listeners)
-                                  hl.onMyEvent(new TwitterEvent(JsonPath.parse(msg).read("id_str"),text,sentiment_score));
+                              TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score);
+                              applicationEventPublisher.publishEvent(te);
                           }
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -145,20 +129,23 @@ public class TwitterKafkaProducer {
 	}
 	
 	
-       public static void main(String[] args) {
-       Properties props = new Properties();
-       props.put("metadata.broker.list","localhost:9092");
-       props.put("serializer.class","kafka.serializer.StringEncoder");
-		props.put("bootstrap.servers", "localhost:9092");
-		TwitterKafkaProducer.initializeSentiment();
-       ProducerConfig producerConfig = new ProducerConfig(props);
-       Producer<String, String>producer = new Producer<String, String>(producerConfig);
-       MyEventHandler mev=new MyEventHandler();
-       TwitterKafkaProducer.addListener(mev);
-       try {	
-                      TwitterKafkaProducer.PushTwittermessage(producer,args[0], args[1], args[2], args[3]);
-       } catch(InterruptedException e) {
-                      System.out.println(e);
-       }
-       }
+//       public static void main(String[] args) {
+//    	   TwitterKafkaProducer tfp=new TwitterKafkaProducer();
+//    	   System.out.println(args[0]);
+//    	   System.out.println(args[1]);
+//    	   System.out.println(args[2]);
+//    	   System.out.println(args[3]);
+//       Properties props = new Properties();
+//       props.put("metadata.broker.list","localhost:9092");
+//       props.put("serializer.class","kafka.serializer.StringEncoder");
+//		props.put("bootstrap.servers", "localhost:9092");
+//		tfp.initializeSentiment();
+//       ProducerConfig producerConfig = new ProducerConfig(props);
+//       Producer<String, String>producer = new Producer<String, String>(producerConfig);
+//       try {	
+//    	   tfp.PushTwittermessage(producer,args[0], args[1], args[2], args[3]);
+//       } catch(InterruptedException e) {
+//                      System.out.println(e);
+//       }
+//       }
 }

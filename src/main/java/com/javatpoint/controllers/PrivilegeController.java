@@ -1,7 +1,5 @@
 package com.javatpoint.controllers;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -9,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,14 +26,10 @@ import com.javatpoint.services.PrivilegeService;
 public class PrivilegeController {
 	@Autowired  
     private PrivilegeService privilegeService; 
-	private  PrivilegeResourceAssembler assembler; 
 	private PrivilegeMapper mapper
     = Mappers.getMapper(PrivilegeMapper.class);
-	PrivilegeController(PrivilegeService privilegeService,
-			PrivilegeResourceAssembler assembler) {
-
+	PrivilegeController(PrivilegeService privilegeService) {
    this.privilegeService = privilegeService;
-   this.assembler = assembler;
  }
 
 

@@ -66,11 +66,11 @@ public class TwitterKafkaConsumer {
           //Shutdown the consumer connector
           if (consumerConnector != null)   consumerConnector.shutdown();
     }
-    public static void main(String[] args) throws InterruptedException {
-          TwitterKafkaConsumer kafkaConsumer = new TwitterKafkaConsumer();
-          // Configure Kafka consumer
-          kafkaConsumer.initialize();
-          // Start consumption
-          kafkaConsumer.consume();
-    }
+//    public static void main(String[] args) throws InterruptedException {
+//          TwitterKafkaConsumer kafkaConsumer = new TwitterKafkaConsumer();
+//          // Configure Kafka consumer
+//          kafkaConsumer.initialize();
+//          // Start consumption
+//          kafkaConsumer.consume();
+//    }
 }

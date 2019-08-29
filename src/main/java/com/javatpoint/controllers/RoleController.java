@@ -1,7 +1,5 @@
 package com.javatpoint.controllers;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -9,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +30,11 @@ public class RoleController {
     private RoleService roleService; 
 	@Autowired  
     private PrivilegeService privilegeService; 
-	private RoleResourceAssembler assembler; 
 	private RoleMapper mapper
     = Mappers.getMapper(RoleMapper.class);
-	RoleController(RoleService roleService,
-			RoleResourceAssembler assembler) {
+	RoleController(RoleService roleService) {
 
    this.roleService = roleService;
-   this.assembler = assembler;
  }
 
 	  @GetMapping("/roles")

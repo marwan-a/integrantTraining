@@ -1,7 +1,5 @@
 package com.javatpoint.controllers;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -12,8 +10,6 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -46,14 +42,11 @@ public class UserController {
     private UserService userService; 
 	@Autowired  
     private RoleService roleService;
-	private  UserResourceAssembler assembler; 
 	private UserMapper mapper
     = Mappers.getMapper(UserMapper.class);
-	UserController(UserService userService,
-			UserResourceAssembler assembler) {
+	UserController(UserService userService) {
 
    this.userService = userService;
-   this.assembler = assembler;
  }
 
 	@GetMapping("/users")
