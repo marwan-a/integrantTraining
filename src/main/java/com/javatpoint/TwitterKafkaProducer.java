@@ -1,5 +1,8 @@
 package com.javatpoint;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -49,7 +52,7 @@ public class TwitterKafkaProducer {
         BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
         StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
         //add some track terms
-        endpoint.trackTerms(Lists.newArrayList("sad","angry", "trump","laugh","congratulations"));
+        endpoint.trackTerms(Lists.newArrayList("trump"));
         Authentication auth = new OAuth1(consumerKey,consumerSecret,token,secret);
         //create a new BasicClient. By default gzip is enabled.
         Client client = new ClientBuilder()
@@ -82,7 +85,11 @@ public class TwitterKafkaProducer {
                               			+"Sentiment type: " + getSentimentResult(text).getSentimentType();
                               message = new KeyedMessage<String, String> (topic, toSend);
                               producer.send(message);
-                              TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score);
+                              final String TWITTER="EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+                              SimpleDateFormat sf = new SimpleDateFormat(TWITTER,Locale.ENGLISH);
+                              sf.setLenient(true);
+                              Date created_at= sf.parse(JsonPath.parse(msg).read("created_at"));
+                              TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score,created_at);
                               applicationEventPublisher.publishEvent(te);
                           }
 					} catch (Exception e) {

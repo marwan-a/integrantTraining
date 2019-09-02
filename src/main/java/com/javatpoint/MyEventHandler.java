@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.EventListener;
@@ -34,14 +37,16 @@ public class MyEventHandler {
 			try {
 				conn = DriverManager.getConnection(myUrl, "root", "marwan");
 				// the mysql insert statement
-			      String query = " insert into tweets (tweet_id, tweet_text, sentiment_score)"
-			        + " values (?, ?, ?)";
+			      String query = " insert into tweets (tweet_id, tweet_text, sentiment_score,created_at)"
+			        + " values (?, ?, ?,?)";
 
 			      // create the mysql insert preparedstatement
 			      PreparedStatement preparedStmt = conn.prepareStatement(query);
 			      preparedStmt.setString (1, twitterEvent.getTweet_id());
 			      preparedStmt.setString (2, twitterEvent.getTweet_text());
 			      preparedStmt.setDouble(3, twitterEvent.getSentiment_score());
+			      Timestamp ts=new Timestamp(twitterEvent.getCreated_at().getTime());
+			      preparedStmt.setTimestamp(4, ts);
 
 			      // execute the preparedstatement
 			      preparedStmt.execute();
