@@ -64,7 +64,7 @@ public class TwitterKafkaProducer {
                       client.connect();
                       //do whatever needs to be done with messages
                       int sent=0;
-                      while(sent<500) {
+                      while(sent<5) {
                       try {
 
                       String msg = queue.take();

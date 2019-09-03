@@ -24,7 +24,7 @@ public class SpringBootJpaApplication {
 		 String apiSecret=args[2];
 		 String accessToken=args[3];
 		 String accessTokenSecret=args[4];
-		 Runnable myRunnable1=new Runnable() {
+		 Runnable myRunnable=new Runnable() {
 				
 				@Override
 				public void run() {
@@ -33,7 +33,6 @@ public class SpringBootJpaApplication {
 				       tfc.consume();
 				}
 			};
-		 Thread myThread=new Thread(myRunnable1);
 		 Runnable myRunnable2=new Runnable() {
 				
 				@Override
@@ -54,28 +53,45 @@ public class SpringBootJpaApplication {
 					}
 				}
 			};
-		 Thread myThread2=new Thread(myRunnable2);
-		 myThread.start();
-		 myThread2.start();
-		 myThread2.join();
-		 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");
-		 Scanner sc=new Scanner(System.in);
-		 while (sc.nextLine().equalsIgnoreCase("y")) {
-			 myThread2=new Thread(myRunnable2);
-			 myThread2.start();
-			 myThread2.join();
-			 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");
-		}
-		 System.out.println("closing application");
-		 sc.close();
-		 Thread.currentThread().interrupt();
-		 int exitCode = SpringApplication.exit(context, new ExitCodeGenerator() {
-	            @Override
-	            public int getExitCode() {
-	                return 0;
-	            }
-	        });
-	        System.exit(exitCode);
+			 Thread myThread2=new Thread(myRunnable2);
+			 Thread myThread=new Thread(myRunnable);
+			 boolean consumer=false;
+			System.out.println("Do you want to close the app? type 'close' to exit, else continue");
+		Scanner sc=new Scanner(System.in);
+	   while(!sc.nextLine().equalsIgnoreCase("close")) 
+	   {
+		   System.out.println("Start tweet fetching? Press Y for yes, else no");
+			if(sc.nextLine().equalsIgnoreCase("y"))
+			{
+				 if (!consumer) {
+					 myThread=new Thread(myRunnable);
+					 myThread.start();
+					 consumer=true;
+				}
+				 myThread2=new Thread(myRunnable2);
+				 myThread2.start();
+				 myThread2.join();
+				 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");	 
+				 while (sc.nextLine().equalsIgnoreCase("y")) {
+					 myThread2=new Thread(myRunnable2);
+					 myThread2.start();
+					 myThread2.join();
+					 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");
+				}
+			}
+			System.out.println("Do you want to close the app? type 'close' to exit, else continue");
+	   }
+	 System.out.println("closing application");
+	 sc.close();
+	 Thread.currentThread().interrupt();
+	 int exitCode = SpringApplication.exit(context, new ExitCodeGenerator() {
+            @Override
+            public int getExitCode() {
+                return 0;
+            }
+        });
+        System.exit(exitCode);
+	        
 	}
 
 	@Bean
