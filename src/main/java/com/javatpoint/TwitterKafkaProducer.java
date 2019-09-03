@@ -31,7 +31,6 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
 
 @Component
 public class TwitterKafkaProducer {
@@ -64,7 +63,8 @@ public class TwitterKafkaProducer {
                       //establish a connection
                       client.connect();
                       //do whatever needs to be done with messages
-                      for (int msgRead=0 ; msgRead<1000 ; msgRead++) {
+                      int sent=0;
+                      while(sent<500) {
                       try {
 
                       String msg = queue.take();
@@ -91,6 +91,7 @@ public class TwitterKafkaProducer {
                               Date created_at= sf.parse(JsonPath.parse(msg).read("created_at"));
                               TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score,created_at);
                               applicationEventPublisher.publishEvent(te);
+                              sent++;
                           }
 					} catch (Exception e) {
 						// TODO: handle exception
