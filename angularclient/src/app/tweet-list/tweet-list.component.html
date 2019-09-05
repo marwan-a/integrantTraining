@@ -1,0 +1,22 @@
+<div class="card my-5">
+    <div class="card-body">
+      <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Tweet id</th>
+            <th scope="col">Tweet Text</th>
+            <th scope="col">Sentiment Score</th>
+            <th scope="col">Creation Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tweet of tweets">
+            <td>{{ tweet.tweet_id }}</td>
+            <td>{{ tweet.tweet_text }}</td>
+            <td>{{ tweet.sentiment }}</td>
+            <td>{{ tweet.created_at }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
