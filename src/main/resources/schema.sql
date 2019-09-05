@@ -35,3 +35,9 @@ create table IF NOT EXISTS confirmationtoken(
 `user_id` int,
 foreign key(`user_id`) references users(`user_id`) on delete cascade on update cascade
 );
+create table IF NOT EXISTS tweets(
+`tweet_id` varchar(255) NOT NULL PRIMARY KEY,
+`tweet_text` varchar(550) not null,
+`sentiment_score` double not null,
+`created_at` datetime not null
+);

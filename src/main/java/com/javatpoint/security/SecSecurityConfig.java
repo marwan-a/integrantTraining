@@ -50,6 +50,7 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/login*").permitAll()
             .antMatchers("/").permitAll()
             .antMatchers("/privileges").permitAll()
+            .antMatchers("/tweets/**").permitAll()
             .antMatchers("/user/registration").permitAll()
             .antMatchers("/user/resendRegistrationToken").permitAll()
             .antMatchers("/confirm-account").permitAll()
