@@ -1,6 +1,7 @@
 package com.javatpoint;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
@@ -45,13 +46,13 @@ public class TwitterKafkaProducer {
 		props.setProperty("annotators", "tokenize, ssplit, parse, sentiment");
 		pipeline = new StanfordCoreNLP(props);
 	}
-	public void PushTwittermessage(Producer<String, String> producer, String consumerKey, String consumerSecret, String token, String secret) throws InterruptedException {
+	public void PushTwittermessage(Producer<String, String> producer, String consumerKey, String consumerSecret, String token, String secret,ArrayList<String> tags, int numTweets) throws InterruptedException {
 		
         KeyedMessage<String, String> message=null;
         BlockingQueue<String> queue = new LinkedBlockingQueue<String>(10000);
         StatusesFilterEndpoint endpoint = new StatusesFilterEndpoint();
         //add some track terms
-        endpoint.trackTerms(Lists.newArrayList("trump"));
+        endpoint.trackTerms(tags);
         Authentication auth = new OAuth1(consumerKey,consumerSecret,token,secret);
         //create a new BasicClient. By default gzip is enabled.
         Client client = new ClientBuilder()
@@ -64,7 +65,7 @@ public class TwitterKafkaProducer {
                       client.connect();
                       //do whatever needs to be done with messages
                       int sent=0;
-                      while(sent<500) {
+                      while(sent<numTweets) {
                       try {
 
                       String msg = queue.take();

@@ -1,5 +1,6 @@
 package com.javatpoint;
 
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -34,28 +35,8 @@ public class SpringBootJpaApplication {
 				       tfc.consume();
 				}
 			};
-		 Runnable myRunnable2=new Runnable() {
-				
-				@Override
-				public void run() {
-					TwitterKafkaProducer tfp= context.getBean(TwitterKafkaProducer.class);
-				       Properties props = new Properties();
-				       props.put("metadata.broker.list","localhost:9092");
-				       props.put("serializer.class","kafka.serializer.StringEncoder");
-						props.put("bootstrap.servers", "localhost:9092");
-						tfp.initializeSentiment();
-				       ProducerConfig producerConfig = new ProducerConfig(props);
-				       Producer<String, String>producer = new Producer<String, String>(producerConfig);
-				       try {
-						tfp.PushTwittermessage(producer,api, apiSecret, accessToken, accessTokenSecret);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			};
-			 Thread myThread2=new Thread(myRunnable2);
 			 Thread myThread=new Thread(myRunnable);
+			 Thread myThread2;
 			 boolean consumer=false;
 			System.out.println("Do you want to close the app? type 'close' to exit, else continue");
 		Scanner sc=new Scanner(System.in);
@@ -63,21 +44,37 @@ public class SpringBootJpaApplication {
 	   {
 		   System.out.println("Start tweet fetching? Press Y for yes, else no");
 			if(sc.nextLine().equalsIgnoreCase("y"))
-			{
+			{	
+				System.out.println("Enter the number of tweets to fetch");
+				int numTweets=Integer.parseInt(sc.nextLine());
+				ArrayList<String> tags=new ArrayList<>();
+				System.out.println("Enter tag #1 to fetch tweets with");
+				tags.add(sc.nextLine());
+				int i=2;
+				while (true) {
+					System.out.println("Enter more tags? press Y for Yes otherwise no");
+					if(!sc.nextLine().equalsIgnoreCase("y"))
+						break;
+					System.out.println("Enter tag #" +i+" to fetch tweets with");
+					tags.add(sc.nextLine());
+					i++;				
+				}
 				 if (!consumer) {
 					 myThread=new Thread(myRunnable);
 					 myThread.start();
 					 consumer=true;
 				}
-				 myThread2=new Thread(myRunnable2);
+				 myThread2=new Thread(createRunnable(context, api, apiSecret, accessToken, accessTokenSecret, tags,numTweets));
 				 myThread2.start();
 				 myThread2.join();
-				 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");	 
+				 System.out.println("fetched "+numTweets+" tweets.. fetch more tweets with the same tags? press y for yes, else no");	 
 				 while (sc.nextLine().equalsIgnoreCase("y")) {
-					 myThread2=new Thread(myRunnable2);
+					 System.out.println("Enter the number of tweets to fetch");
+					 numTweets=Integer.parseInt(sc.nextLine());
+					 myThread2=new Thread(createRunnable(context, api, apiSecret, accessToken, accessTokenSecret, tags,numTweets));
 					 myThread2.start();
 					 myThread2.join();
-					 System.out.println("fetched 500 tweets.. fetch more tweets? press y for yes, else no");
+					 System.out.println("fetched "+numTweets+" tweets.. fetch more tweets with the same tags? press y for yes, else no");
 				}
 			}
 			System.out.println("Do you want to close the app? type 'close' to exit, else continue");
@@ -94,7 +91,30 @@ public class SpringBootJpaApplication {
         System.exit(exitCode);
 	        
 	}
+	private static Runnable createRunnable(ConfigurableApplicationContext context,String api, String apiSecret, String accessToken, String accessTokenSecret,ArrayList<String> tags, int numTweets){
 
+	    Runnable aRunnable = new Runnable(){
+			public void run() {
+				TwitterKafkaProducer tfp= context.getBean(TwitterKafkaProducer.class);
+			       Properties props = new Properties();
+			       props.put("metadata.broker.list","localhost:9092");
+			       props.put("serializer.class","kafka.serializer.StringEncoder");
+					props.put("bootstrap.servers", "localhost:9092");
+					tfp.initializeSentiment();
+			       ProducerConfig producerConfig = new ProducerConfig(props);
+			       Producer<String, String>producer = new Producer<String, String>(producerConfig);
+			       try {
+					tfp.PushTwittermessage(producer,api, apiSecret, accessToken, accessTokenSecret,tags,numTweets);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	    };
+
+	    return aRunnable;
+
+	}
 	@Bean
 	public TwitterKafkaConsumer twitterConsumer() {
 		return new TwitterKafkaConsumer();

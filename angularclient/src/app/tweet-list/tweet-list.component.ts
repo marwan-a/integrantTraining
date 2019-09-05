@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,Input} from '@angular/core';
 import { Tweet } from '../model/tweet';
 import { TweetService } from '../service/tweet-service.service';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/switchMap';
+import { Observable } from 'rxjs/Observable';
  
 @Component({
   selector: 'app-tweet-list',
@@ -8,15 +12,14 @@ import { TweetService } from '../service/tweet-service.service';
   styleUrls: ['./tweet-list.component.css']
 })
 export class TweetListComponent implements OnInit {
- 
-  tweets: Tweet[];
- 
-  constructor(private tweetService: TweetService) {
-  }
- 
+
+  @Input() tweets: Observable<any>;
+  constructor(private api: TweetService) { }
+
   ngOnInit() {
-    this.tweetService.findAll().subscribe(data => {
-      this.tweets = data;
-    });
+    this.tweets = Observable
+      .interval(1000)
+      .startWith(0).switchMap(() => this.api.findAll());
   }
+
 }
