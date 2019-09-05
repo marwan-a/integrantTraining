@@ -47,20 +47,6 @@ public class TwitterKafkaConsumer {
                  {	String out="Message consumed from topic[" + topic + "] : "       +
                          new String(consumerIte.next().message());
                      System.out.println(out);
-                	 FileWriter fr = null;
-                     try {
-                         fr = new FileWriter(f,true);
-                         fr.write(out+System.getProperty("line.separator"));
-                     } catch (IOException e) {
-                         e.printStackTrace();
-                     }finally{
-                         //close resources
-                         try {
-                             fr.close();
-                         } catch (IOException e) {
-                             e.printStackTrace();
-                         }
-                     }
                  }
           }
           //Shutdown the consumer connector

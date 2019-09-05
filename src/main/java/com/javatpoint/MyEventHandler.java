@@ -67,20 +67,6 @@ public class MyEventHandler {
 //				// TODO Auto-generated catch block
 //				e1.printStackTrace();
 //			}
-			FileWriter fr = null;
-	        try {
-	            fr = new FileWriter(f,true);
-	            fr.write("tweet recieved"+System.getProperty("line.separator"));
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }finally{
-	            //close resources
-	            try {
-	                fr.close();
-	            } catch (IOException  e) {
-	                e.printStackTrace();
-	            }
-	        }
 		}
 	}
 
