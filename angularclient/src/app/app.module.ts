@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule,InjectionToken, ModuleWithProviders } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -9,14 +9,13 @@ import { PrivilegeService } from './service/privilege-service.service';
 import { TweetService } from './service/tweet-service.service';
 import { TweetListComponent } from './tweet-list/tweet-list.component';
 import { TwitterFormComponent } from './twitter-form/twitter-form.component';
- 
 @NgModule({
   declarations: [
     AppComponent,
     PrivilegeListComponent,
     TweetListComponent,
     TwitterFormComponent
-  ],
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -27,5 +26,5 @@ import { TwitterFormComponent } from './twitter-form/twitter-form.component';
     TweetService
   ],
   bootstrap: [AppComponent]
-})
+})  
 export class AppModule { }
