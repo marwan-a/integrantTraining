@@ -100,4 +100,19 @@ public class TweetController {
 	  public ArrayList<TweetDto> getAllTweetsBySentiment(@PathVariable double sentiment_score) {
 	    return mapper.tweetsToDtos(tweetService.getAllTweetsWithSentimentScore(sentiment_score));
 	  }
+	  @GetMapping("/tweets/sentiment")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public double getAllSentimentAverage() {
+		  double average = tweetService.getAllTweets().stream()
+                  .mapToDouble(p -> p.getSentiment())
+                  .average()
+                  .orElse(0);
+		  return average;
+	  }
+	  @GetMapping("/tweets/count")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsCount()
+	  {		
+		  return tweetService.getAllTweets().size();
+	  }
 }
