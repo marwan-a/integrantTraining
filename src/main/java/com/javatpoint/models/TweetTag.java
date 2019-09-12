@@ -50,6 +50,7 @@ public class TweetTag {
     
     public void addTweet(Tweet t)
     {
-    	tweets.add(t);
+    	if(tweets!=null)
+    		tweets.add(t);
     }
 }
