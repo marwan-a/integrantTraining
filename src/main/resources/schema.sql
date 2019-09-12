@@ -41,3 +41,14 @@ create table IF NOT EXISTS tweets(
 `sentiment_score` double not null,
 `created_at` datetime not null
 );
+create table IF NOT EXISTS twittertags(
+`tweet_tag_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`tweet_tag_name` varchar(60) not null
+);
+create table IF NOT EXISTS tweets_tags(
+`tweet_id` varchar(255),
+`tweet_tag_id` int,
+primary key (`tweet_id`,`tweet_tag_id`),
+foreign key (`tweet_id`) references tweets(`tweet_id`) on delete cascade on update cascade,
+foreign key (`tweet_tag_id`) references twittertags(`tweet_tag_id`) on delete cascade on update cascade
+);

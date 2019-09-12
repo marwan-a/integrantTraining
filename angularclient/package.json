@@ -21,6 +21,7 @@
     "@angular/router": "~8.2.4",
     "angular-gauge": "^3.1.2",
     "angular-gauge-chart": "^0.7.1",
+    "canvasjs": "^1.8.1",
     "rxjs": "~6.4.0",
     "rxjs-compat": "^6.5.2",
     "svg-gauge": "^1.0.6",

@@ -90,7 +90,7 @@ public class TwitterKafkaProducer {
                               SimpleDateFormat sf = new SimpleDateFormat(TWITTER,Locale.ENGLISH);
                               sf.setLenient(true);
                               Date created_at= sf.parse(JsonPath.parse(msg).read("created_at"));
-                              TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score,created_at);
+                              TwitterEvent te=new TwitterEvent(this,JsonPath.parse(msg).read("id_str"),text,sentiment_score,created_at,tags.get(0));
                               applicationEventPublisher.publishEvent(te);
                               sent++;
                           }

@@ -24,16 +24,25 @@ import com.javatpoint.services.TweetService;
 
 import kafka.javaapi.producer.Producer;
 import kafka.producer.ProducerConfig;
+import lombok.Data;
 
 @RestController
+@Data
 public class TweetController {
+
 	@Autowired
 	private TweetService tweetService;
 	private TweetMapper mapper
 	=Mappers.getMapper(TweetMapper.class);
 	@Autowired
 	private ConfigurableApplicationContext context;
-	private static boolean consumer=false;	
+	private static boolean consumer=false;
+	private static boolean initialized=false;
+	private int veryNegative;
+	private int negative;
+	private int neutral;
+	private int positive;
+	private int veryPositive;
 	@PostMapping("/tweets/startTweetFetching")
 	@CrossOrigin(origins = "http://localhost:4200")
 	void startTweet(@RequestBody TweetFetchInfo tfi) throws InterruptedException
@@ -87,6 +96,15 @@ public class TweetController {
 	  @GetMapping("/tweets")
 	  @CrossOrigin(origins = "http://localhost:4200")
 	  public ArrayList<TweetDto> getAllTweets() {
+	    if(!initialized)
+	    {
+	    	veryNegative=tweetService.getTweetsCountWithSentimentScore(0.0);
+	    	negative=tweetService.getTweetsCountWithSentimentScore(1.0);
+	    	neutral=tweetService.getTweetsCountWithSentimentScore(2.0);
+	    	positive=tweetService.getTweetsCountWithSentimentScore(3.0);
+	    	veryPositive=tweetService.getTweetsCountWithSentimentScore(4.0);
+	    	initialized=true;
+	    }
 	    return mapper.tweetsToDtos(tweetService.getAllTweets());
 	  }
 	  @GetMapping("/tweets/{id}")
@@ -114,5 +132,51 @@ public class TweetController {
 	  public int getAllTweetsCount()
 	  {		
 		  return tweetService.getAllTweets().size();
+	  }
+	  @GetMapping("/tweets/sentiment/veryNegative")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsWithVeryNegative()
+	  {	  
+		  return veryNegative;
+	  }
+	  @GetMapping("/tweets/sentiment/negative")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsWithNegative()
+	  {		
+		  return negative;
+	  }
+	  @GetMapping("/tweets/sentiment/neutral")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsWithNeutral()
+	  {		
+		  return neutral;
+	  }
+	  @GetMapping("/tweets/sentiment/positive")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsWithPositive()
+	  {		
+		  return positive;
+	  }
+	  @GetMapping("/tweets/sentiment/veryPositive")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsWithVeryPositive()
+	  {		
+		  return veryPositive;
+	  }
+	  
+	  
+	  @GetMapping("/tweets/tag/{tag}")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public ArrayList<TweetDto> getAllTweetsWithTag(@PathVariable String tag) {
+	    if(!initialized)
+	    {
+	    	veryNegative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,0.0);
+	    	negative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,1.0);
+	    	neutral=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,2.0);
+	    	positive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,3.0);
+	    	veryPositive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,4.0);
+	    	initialized=true;
+	    }
+	    return mapper.tweetsToDtos(tweetService.getAllTweetsWithTag(tag));
 	  }
 }
