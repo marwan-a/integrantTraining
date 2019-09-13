@@ -1,5 +1,5 @@
 spring:
-    profiles: dev
+    profiles: default
     application:
       name: Marwan App
     thymeleaf:
@@ -11,9 +11,10 @@ spring:
       username: root
       password: marwan
       initialization-mode: always
+      continue-on-error: true
     jpa:
       properties:        hibernate:
-          dialect: org.hibernate.dialect.MySQL5Dialect
+          dialect: org.hibernate.dialect.MySQL8Dialect
           id:
             new_generator_mappings: false
       hibernate:        ddl-auto: none
