@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import com.google.common.collect.Lists;
 import com.jayway.jsonpath.JsonPath;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
@@ -136,25 +135,4 @@ public class TwitterKafkaProducer {
 
 		return sentimentResult;
 	}
-	
-	
-//       public static void main(String[] args) {
-//    	   TwitterKafkaProducer tfp=new TwitterKafkaProducer();
-//    	   System.out.println(args[0]);
-//    	   System.out.println(args[1]);
-//    	   System.out.println(args[2]);
-//    	   System.out.println(args[3]);
-//       Properties props = new Properties();
-//       props.put("metadata.broker.list","localhost:9092");
-//       props.put("serializer.class","kafka.serializer.StringEncoder");
-//		props.put("bootstrap.servers", "localhost:9092");
-//		tfp.initializeSentiment();
-//       ProducerConfig producerConfig = new ProducerConfig(props);
-//       Producer<String, String>producer = new Producer<String, String>(producerConfig);
-//       try {	
-//    	   tfp.PushTwittermessage(producer,args[0], args[1], args[2], args[3]);
-//       } catch(InterruptedException e) {
-//                      System.out.println(e);
-//       }
-//       }
 }

@@ -1,8 +1,5 @@
 package com.javatpoint;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +9,10 @@ import kafka.consumer.ConsumerConfig;
 import kafka.consumer.ConsumerIterator;
 import kafka.consumer.KafkaStream;
 import kafka.javaapi.consumer.ConsumerConnector;
+
 public class TwitterKafkaConsumer {
     private ConsumerConnector consumerConnector = null;
     private final String topic = "twitter-topic";
-    private final File f=new File("output.txt");
     public void initialize() {
           Properties props = new Properties();
           props.put("auto.offset.reset", "largest");
@@ -26,8 +23,6 @@ public class TwitterKafkaConsumer {
           props.put("auto.commit.interval.ms", "1000");
           ConsumerConfig conConfig = new ConsumerConfig(props);
           consumerConnector = Consumer.createJavaConsumerConnector(conConfig);
-          if (f.exists())
-        	  f.delete();
           
     }
     public void consume() {
@@ -52,11 +47,4 @@ public class TwitterKafkaConsumer {
           //Shutdown the consumer connector
           if (consumerConnector != null)   consumerConnector.shutdown();
     }
-//    public static void main(String[] args) throws InterruptedException {
-//          TwitterKafkaConsumer kafkaConsumer = new TwitterKafkaConsumer();
-//          // Configure Kafka consumer
-//          kafkaConsumer.initialize();
-//          // Start consumption
-//          kafkaConsumer.consume();
-//    }
 }

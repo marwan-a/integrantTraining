@@ -2,8 +2,6 @@ package com.javatpoint.models;
 
 import java.util.Collection;
 import java.util.Date;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
