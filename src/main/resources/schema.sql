@@ -43,7 +43,7 @@ create table IF NOT EXISTS tweets(
 );
 create table IF NOT EXISTS twittertags(
 `tweet_tag_id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-`tweet_tag_name` varchar(60) not null unique
+`tweet_tag_name` varchar(60) not null
 );
 create table IF NOT EXISTS tweets_tags(
 `tweet_id` varchar(255),

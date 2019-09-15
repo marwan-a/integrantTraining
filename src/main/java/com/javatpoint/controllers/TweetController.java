@@ -176,6 +176,8 @@ public class TweetController {
 		    	neutral=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,2.0);
 		    	positive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,3.0);
 		    	veryPositive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,4.0);
+		    	initialized=false;
+		    	tagStatic=tag;
 		  }
 	    return mapper.tweetsToDtos(tweetService.getAllTweetsWithTag(tag));
 	  }
