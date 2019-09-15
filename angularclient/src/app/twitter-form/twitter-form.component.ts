@@ -21,6 +21,6 @@ export class TwitterFormComponent {
   }
  
   gotoTweetList() {
-    this.router.navigate(['/tweets']);
+    this.router.navigate(['/tweets/'+this.TwitterKafkaInfo.tag]);
   }
 }

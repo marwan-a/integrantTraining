@@ -38,6 +38,7 @@ public class TweetController {
 	private ConfigurableApplicationContext context;
 	private static boolean consumer=false;
 	private static boolean initialized=false;
+	private static String tagStatic="";
 	private int veryNegative;
 	private int negative;
 	private int neutral;
@@ -168,15 +169,29 @@ public class TweetController {
 	  @GetMapping("/tweets/tag/{tag}")
 	  @CrossOrigin(origins = "http://localhost:4200")
 	  public ArrayList<TweetDto> getAllTweetsWithTag(@PathVariable String tag) {
-	    if(!initialized)
-	    {
-	    	veryNegative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,0.0);
-	    	negative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,1.0);
-	    	neutral=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,2.0);
-	    	positive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,3.0);
-	    	veryPositive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,4.0);
-	    	initialized=true;
-	    }
+		  if(!tag.equalsIgnoreCase(tagStatic))
+		  {
+			  	veryNegative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,0.0);
+		    	negative=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,1.0);
+		    	neutral=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,2.0);
+		    	positive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,3.0);
+		    	veryPositive=tweetService.getTweetsCountWithSentimentScoreAndTag(tag,4.0);
+		  }
 	    return mapper.tweetsToDtos(tweetService.getAllTweetsWithTag(tag));
+	  }
+	  @GetMapping("/tweets/tag/count/{tag}")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public int getAllTweetsCountWithTag(@PathVariable String tag)
+	  {		
+		  return tweetService.getAllTweetsWithTag(tag).size();
+	  }
+	  @GetMapping("/tweets/tag/sentiment/{tag}")
+	  @CrossOrigin(origins = "http://localhost:4200")
+	  public double getAllSentimentAverageWithTag(@PathVariable String tag) {
+		  double average = tweetService.getAllTweetsWithTag(tag).stream()
+                  .mapToDouble(p -> p.getSentiment())
+                  .average()
+                  .orElse(0);
+		  return average;
 	  }
 }

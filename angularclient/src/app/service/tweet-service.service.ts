@@ -60,4 +60,16 @@ export class TweetService {
   public findVeryPositiveTweets(): Observable<number> {
     return this.http.get<number>(this.tweetsUrlVeryPositive);
   }
+
+  public findAllWithTag(tag:string): Observable<Tweet[]> {
+    return this.http.get<Tweet[]>('http://localhost:8080/tweets/tag/'+tag);
+  }
+  public findTweetsSentimentWithTag(tag:string) :Observable<TweetsSentiment>
+  {  
+    return this.http.get<TweetsSentiment>('http://localhost:8080/tweets/tag/sentiment/'+tag);
+  }
+  public findTweetsCountWithTag(tag:string):Observable<TweetsCount>
+  { 
+    return this.http.get<TweetsCount>('http://localhost:8080/tweets/tag/count/'+tag);
+  }
 }

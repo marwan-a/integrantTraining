@@ -9,12 +9,14 @@ import { PrivilegeService } from './service/privilege-service.service';
 import { TweetService } from './service/tweet-service.service';
 import { TweetListComponent } from './tweet-list/tweet-list.component';
 import { TwitterFormComponent } from './twitter-form/twitter-form.component';
+import { TweetListTagComponent } from './tweet-list-tag/tweet-list-tag.component';
 @NgModule({
   declarations: [
     AppComponent,
     PrivilegeListComponent,
     TweetListComponent,
-    TwitterFormComponent
+    TwitterFormComponent,
+    TweetListTagComponent
     ],
   imports: [
     BrowserModule,
